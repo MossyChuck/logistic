@@ -11,6 +11,7 @@ public class Gui {
     private JButton orderButton;
     private JButton driverLoginButton;
     private JButton adminLoginButton;
+    private OrderDialog orderDialog;
 
     public Gui(){
         orderButton = new JButton("make order");
@@ -35,7 +36,12 @@ public class Gui {
     class orderButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-           new OrderDialog(mainFrame);
+            if(orderDialog == null){
+                orderDialog = new OrderDialog(mainFrame);
+            } else{
+                orderDialog.setVisible(true);
+            }
+
         }
     }
 }
