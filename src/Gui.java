@@ -13,7 +13,7 @@ public class Gui {
     public void build(){
         mainFrame = new JFrame();
         mainPanel = new JPanel();
-        button = new JButton("qwe");
+        button = new JButton("btn");
         mainPanel.add(button);
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
