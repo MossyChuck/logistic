@@ -47,9 +47,9 @@ public class AddingItemDialog extends JDialog {
         weightTextField.setSize(new Dimension(500,30));
         pane.add(weightTextField);
         okButton = new JButton("Ok");
-        okButton.addActionListener(new OkButtonActionListener());
+        okButton.addActionListener(ActionListener -> okButtonAction());
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new CancelButtonActionListener());
+        cancelButton.addActionListener(ActionListener -> cancelButtonAction());
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
         p.add(okButton);
@@ -63,34 +63,27 @@ public class AddingItemDialog extends JDialog {
 
     }
 
-    class OkButtonActionListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            OrderDialog od = (OrderDialog)getOwner();
-            String name = nameTextField.getText();
-            try {
-                double volume = Double.parseDouble(volumeTextField.getText());
-                double weight = Double.parseDouble(weightTextField.getText());
-                Item item = new Item(name,volume,weight);
-                od.addItem(item);
-            }catch (NumberFormatException exception) {
-                System.out.println("parse err");
-            }finally {
-                nameTextField.setText("");
-                volumeTextField.setText("");
-                weightTextField.setText("");
-                setVisible(false);
-            }
-
-        }
-    }
-    class CancelButtonActionListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    private void okButtonAction(){
+        OrderDialog od = (OrderDialog)getOwner();
+        String name = nameTextField.getText();
+        try {
+            double volume = Double.parseDouble(volumeTextField.getText());
+            double weight = Double.parseDouble(weightTextField.getText());
+            Item item = new Item(name,volume,weight);
+            od.addItem(item);
+        }catch (NumberFormatException exception) {
+            System.out.println("parse err");
+        }finally {
             nameTextField.setText("");
             volumeTextField.setText("");
             weightTextField.setText("");
             setVisible(false);
         }
+    }
+    private void cancelButtonAction(){
+        nameTextField.setText("");
+        volumeTextField.setText("");
+        weightTextField.setText("");
+        setVisible(false);
     }
 }

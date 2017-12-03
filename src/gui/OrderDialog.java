@@ -73,10 +73,10 @@ public class OrderDialog extends JDialog {
         //pane.add(addItemButton);
         pane.add(p2);
         okButton = new JButton("Ok");
-        okButton.addActionListener(new OkButtonActionListener());
-        addItemButton.addActionListener(new AddItemButtonActionListener());
+        okButton.addActionListener(ActionListener -> okButtonAction());
+        addItemButton.addActionListener(ActionListener -> addItemButtonAction());
         cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new CancelButtonActionListener());
+        cancelButton.addActionListener(ActionListener -> cancelButtonAction());
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
         p.add(okButton);
@@ -88,34 +88,28 @@ public class OrderDialog extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
-    class OkButtonActionListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
+    private void okButtonAction(){
+        System.out.println("ok");
+    }
+    private void addItemButtonAction(){
+        if(addingItemDialog == null){
+            addingItemDialog = new AddingItemDialog(this);
+        }else {
+            addingItemDialog.setVisible(true);
         }
+    }
+    private void cancelButtonAction(){
+        nameTextField.setText("");
+        items.clear();
+        stockComboBox.setSelectedIndex(0);
+        destinationPlaceComboBox.setSelectedIndex(0);
+        changeAddedItemsCountLabel();
+        setVisible(false);
     }
     class CancelButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            nameTextField.setText("");
-            items.removeAll(items);
-            stockComboBox.setSelectedIndex(0);
-            destinationPlaceComboBox.setSelectedIndex(0);
-            changeAddedItemsCountLabel();
-            setVisible(false);
-        }
-    }
-    class AddItemButtonActionListener implements ActionListener{
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(addingItemDialog == null){
-                addingItemDialog = new AddingItemDialog(owner);
-            }else{
-                addingItemDialog.setVisible(true);
-            }
 
         }
     }
-
-
 }
