@@ -22,11 +22,18 @@ public class AddingItemDialog extends JDialog {
     private JButton cancelButton;
     private Container pane;
 
-    private void addLabel(JLabel label, String name){
-        label = new JLabel(name);
+    private JLabel addLabel(String name){
+        JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         label.setSize(new Dimension(500,50));
         pane.add(label);
+        return label;
+    }
+    private JTextField addTextField(){
+        JTextField textField = new JTextField();
+        textField.setSize(new Dimension(500,30));
+        pane.add(textField);
+        return textField;
     }
 
     public AddingItemDialog(JDialog owner){
@@ -34,18 +41,12 @@ public class AddingItemDialog extends JDialog {
         pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
-        addLabel(nameLabel,"Name");
-        nameTextField = new JTextField();
-        nameTextField.setSize(new Dimension(500,30));
-        pane.add(nameTextField);
-        addLabel(volumeLabel,"Volume");
-        volumeTextField = new JTextField();
-        volumeTextField.setSize(new Dimension(500,30));
-        pane.add(volumeTextField);
-        addLabel(weightLabel,"Weight");
-        weightTextField = new JTextField();
-        weightTextField.setSize(new Dimension(500,30));
-        pane.add(weightTextField);
+        nameLabel = addLabel("Name");
+        nameTextField = addTextField();
+        volumeLabel = addLabel("Volume");
+        volumeTextField = addTextField();
+        weightLabel = addLabel("Weight");
+        weightTextField = addTextField();
         okButton = new JButton("Ok");
         okButton.addActionListener(ActionListener -> okButtonAction());
         cancelButton = new JButton("Cancel");
