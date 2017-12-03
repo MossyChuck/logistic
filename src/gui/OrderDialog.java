@@ -33,14 +33,11 @@ public class OrderDialog extends JDialog {
         label.setSize(new Dimension(500,50));
         pane.add(label);
     }
-    private void addComboBox(JComboBox<Place> comboBox, Place[] places){
-        comboBox = new JComboBox<>(places);
-        comboBox.setMaximumSize(new Dimension(500,30));
-        pane.add(comboBox);
-    }
-
     public void addItem(Item item){
         items.add(item);
+        changeAddedItemsCountLabel();
+    }
+    private void changeAddedItemsCountLabel(){
         addedItemsCountLabel.setText("Items added: "+items.size());
     }
 
@@ -56,10 +53,15 @@ public class OrderDialog extends JDialog {
         pane.add(nameTextField);
         addLabel(stockLabel,"From");
         Place[] stocks = {new Stock("place1"),new Stock("place2")};
-        addComboBox(stockComboBox, stocks);
+        //addComboBox(stockComboBox, stocks);
+        stockComboBox = new JComboBox<>(stocks);
+        stockComboBox.setMaximumSize(new Dimension(500,30));
+        pane.add(stockComboBox);
         addLabel(destinationPlaceLabel,"Where");
         Place[] destinationPlaces = {new DestinationPlace("place3"),new DestinationPlace("place4")};
-        addComboBox(destinationPlaceComboBox, destinationPlaces);
+        destinationPlaceComboBox = new JComboBox<>(destinationPlaces);
+        destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
+        pane.add(destinationPlaceComboBox);
         //addLabel(addedItemsCountLabel,"Items added: "+items.size());
         addedItemsCountLabel = new JLabel("Items added: "+ items.size());
         addedItemsCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -71,8 +73,10 @@ public class OrderDialog extends JDialog {
         //pane.add(addItemButton);
         pane.add(p2);
         okButton = new JButton("Ok");
-        addItemButton.addActionListener(new addItemButtonActionListener());
+        okButton.addActionListener(new OkButtonActionListener());
+        addItemButton.addActionListener(new AddItemButtonActionListener());
         cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new CancelButtonActionListener());
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
         p.add(okButton);
@@ -84,8 +88,24 @@ public class OrderDialog extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
+    class OkButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
 
-    class addItemButtonActionListener implements ActionListener{
+        }
+    }
+    class CancelButtonActionListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            nameTextField.setText("");
+            items.removeAll(items);
+            stockComboBox.setSelectedIndex(0);
+            destinationPlaceComboBox.setSelectedIndex(0);
+            changeAddedItemsCountLabel();
+            setVisible(false);
+        }
+    }
+    class AddItemButtonActionListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             if(addingItemDialog == null){
