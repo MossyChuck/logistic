@@ -12,6 +12,7 @@ public class Gui {
     private JButton driverLoginButton;
     private JButton adminLoginButton;
     private OrderDialog orderDialog;
+    private AddingRoadDialog addingRoadDialog;
 
     public Gui(){
         orderButton = new JButton("make order");
@@ -43,6 +44,12 @@ public class Gui {
         JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
         placeMenu.add(deletePlaceMenuItem);
         menuBar.add(placeMenu);
+        JMenu roadMenu = new JMenu("Road");
+        JMenuItem addRoadMenuItem = new JMenuItem("Add");
+        addRoadMenuItem.addActionListener(ActionListener -> addRoadAction());
+        roadMenu.add(addRoadMenuItem);
+        menuBar.add(roadMenu);
+
 
 
         mainFrame.setJMenuBar(menuBar);
@@ -59,6 +66,13 @@ public class Gui {
             orderDialog = new OrderDialog(mainFrame);
         } else{
             orderDialog.setVisible(true);
+        }
+    }
+    private void addRoadAction(){
+        if(addingRoadDialog == null){
+            addingRoadDialog = new AddingRoadDialog(mainFrame);
+        }else{
+            addingRoadDialog.setVisible(true);
         }
     }
 

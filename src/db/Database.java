@@ -1,3 +1,5 @@
+package db;
+
 import place.Place;
 import place.Road;
 import place.Stock;
@@ -75,13 +77,13 @@ public class Database {
         }
     }
 
-    public static void main(String args[]) {
-        init();
-        ArrayList<Road> roads = new ArrayList<>();
-        roads.add(new Road("stock1","place1",20));
-        roads.add(new Road("stock1","place2",30));
-        roads.add(new Road("stock2","place2",50));
-        insertRoads(roads);
-    }
+//    public static void main(String args[]) {
+//        init();
+//        ArrayList<Road> roads = new ArrayList<>();
+//        roads.add(new Road("stock1","place1",20));
+//        roads.add(new Road("stock1","place2",30));
+//        roads.add(new Road("stock2","place2",50));
+//        insertRoads(roads);
+//    }
 
 }
