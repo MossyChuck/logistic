@@ -30,14 +30,19 @@ public class Gui {
         menuBar.add(fileMenu);
         JMenu orders = new JMenu("Orders");
         JMenuItem newOrder = new JMenuItem("New order");
-        newOrder.addActionListener(ActionListener -> {
-            if(orderDialog == null){
-                orderDialog = new OrderDialog(mainFrame);
-            } else{
-                orderDialog.setVisible(true);
-            }});
+        newOrder.addActionListener(ActionListener -> newOrderAction());
         orders.add(newOrder);
         menuBar.add(orders);
+        JMenu placeMenu = new JMenu("Place");
+        JMenu addPlaceMenu = new JMenu("Add place");
+        JMenuItem addStockMenuItem = new JMenuItem("Add stock");
+        JMenuItem addDestinationPlaceMenuItem = new JMenuItem("Add destination place");
+        addPlaceMenu.add(addStockMenuItem);
+        addPlaceMenu.add(addDestinationPlaceMenuItem);
+        placeMenu.add(addPlaceMenu);
+        JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
+        placeMenu.add(deletePlaceMenuItem);
+        menuBar.add(placeMenu);
 
 
         mainFrame.setJMenuBar(menuBar);
@@ -49,6 +54,12 @@ public class Gui {
         mainFrame.setSize(new Dimension(400,400));
         mainFrame.setVisible(true);
     }
-
+    private void newOrderAction(){
+        if(orderDialog == null){
+            orderDialog = new OrderDialog(mainFrame);
+        } else{
+            orderDialog.setVisible(true);
+        }
+    }
 
 }
