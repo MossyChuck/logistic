@@ -14,11 +14,10 @@ public class AddingRoadDialog extends JDialog {
     private JDialog owner;
     private JLabel lengthLabel;
     private JTextField lengthTextField;
-    private JLabel addedItemsCountLabel;
     private JLabel stockLabel;
     private JLabel destinationPlaceLabel;
-    private JComboBox<Place> stockComboBox;
-    private JComboBox<Place> destinationPlaceComboBox;
+    private JComboBox<Stock> stockComboBox;
+    private JComboBox<DestinationPlace> destinationPlaceComboBox;
     private JButton okButton;
     private JButton cancelButton;
     private Container pane;
@@ -32,22 +31,22 @@ public class AddingRoadDialog extends JDialog {
     }
 
     public AddingRoadDialog(JFrame owner){
-        super(owner,"Make order",true);
+        super(owner,"Add road",true);
         this.owner = this;
         pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        lengthLabel = addLabel("Your name");
+        lengthLabel = addLabel("Length");
         lengthTextField = new JTextField();
         lengthTextField.setMaximumSize(new Dimension(500,30));
         pane.add(lengthTextField);
         stockLabel = addLabel("From");
-        Place[] stocks = {new Stock("place1"),new Stock("place2")};
+        Stock[] stocks = Database.getStocks();
         //addComboBox(stockComboBox, stocks);
         stockComboBox = new JComboBox<>(stocks);
         stockComboBox.setMaximumSize(new Dimension(500,30));
         pane.add(stockComboBox);
         destinationPlaceLabel = addLabel("Where");
-        Place[] destinationPlaces = {new DestinationPlace("place3"),new DestinationPlace("place4")};
+        DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
         destinationPlaceComboBox = new JComboBox<>(destinationPlaces);
         destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
         pane.add(destinationPlaceComboBox);

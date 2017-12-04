@@ -13,6 +13,7 @@ public class Gui {
     private JButton adminLoginButton;
     private OrderDialog orderDialog;
     private AddingRoadDialog addingRoadDialog;
+    private AddingPlaceDialog addingPlaceDialog;
 
     public Gui(){
         orderButton = new JButton("make order");
@@ -35,12 +36,9 @@ public class Gui {
         orders.add(newOrder);
         menuBar.add(orders);
         JMenu placeMenu = new JMenu("Place");
-        JMenu addPlaceMenu = new JMenu("Add place");
-        JMenuItem addStockMenuItem = new JMenuItem("Add stock");
-        JMenuItem addDestinationPlaceMenuItem = new JMenuItem("Add destination place");
-        addPlaceMenu.add(addStockMenuItem);
-        addPlaceMenu.add(addDestinationPlaceMenuItem);
-        placeMenu.add(addPlaceMenu);
+        JMenuItem addPlaceMenuItem = new JMenuItem("Add");
+        addPlaceMenuItem.addActionListener(ActionListener -> addPlaceAction());
+        placeMenu.add(addPlaceMenuItem);
         JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
         placeMenu.add(deletePlaceMenuItem);
         menuBar.add(placeMenu);
@@ -66,6 +64,13 @@ public class Gui {
             orderDialog = new OrderDialog(mainFrame);
         } else{
             orderDialog.setVisible(true);
+        }
+    }
+    private void addPlaceAction(){
+        if(addingPlaceDialog == null){
+            addingPlaceDialog = new AddingPlaceDialog(mainFrame);
+        }else{
+            addingPlaceDialog.setVisible(true);
         }
     }
     private void addRoadAction(){

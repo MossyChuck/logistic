@@ -1,5 +1,7 @@
 package db;
 
+import gui.AddingPlaceDialog;
+import place.DestinationPlace;
 import place.Place;
 import place.Road;
 import place.Stock;
@@ -40,15 +42,29 @@ public class Database {
         }
     }
     public static void insertPlace(Place place){
+        AddingPlaceDialog.Type type;
+        if(place instanceof Stock){
+            type = AddingPlaceDialog.Type.STOCK;
+        }else {
+            type = AddingPlaceDialog.Type.DESTINATION_PLACE;
+        }
+        String query = "insert into places (name,type) values (\""+place.getName()+"\",\""+type.toString()+"\");";
+        try {
+            stmt.executeUpdate(query);
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
 
     }
-    public static ArrayList<Place> getAllPlaces(){
-        String query = "select * from places";
+    public static Stock[] getStocks(){
+        String query = "select * from places where type=\""+AddingPlaceDialog.Type.STOCK+"\";";
+        ArrayList<Stock> stocks = new ArrayList<>();
         try{
             rs = stmt.executeQuery(query);
 
             while(rs.next()){
-
+                String name = rs.getString("name");
+                stocks.add(new Stock(name));
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
@@ -59,7 +75,28 @@ public class Database {
                 System.out.println("closing connection error");
             }
         }
-        return new ArrayList<>();
+        return stocks.toArray(new Stock[stocks.size()]);
+    }
+    public static DestinationPlace[] getDestinationPlaces(){
+        String query = "select * from places where type=\""+AddingPlaceDialog.Type.DESTINATION_PLACE+"\";";
+        ArrayList<DestinationPlace> destinationPlaces = new ArrayList<>();
+        try{
+            rs = stmt.executeQuery(query);
+
+            while(rs.next()){
+                String name = rs.getString("name");
+                destinationPlaces.add(new DestinationPlace(name));
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }finally {
+            try{
+                rs.close();
+            }catch (SQLException exception){
+                System.out.println("closing connection error");
+            }
+        }
+        return destinationPlaces.toArray(new DestinationPlace[destinationPlaces.size()]);
     }
     public static void insertRoads(ArrayList<Road> roads){
         for (Road road:roads) {

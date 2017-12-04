@@ -9,10 +9,4 @@ public class Stock extends Place{
     public Stock(String name){
         super(name);
     }
-    public Stock(String name, Road[] roads){
-        super(name);
-    }
-    public Stock(String name, ArrayList<Road> roads){
-        super(name);
-    }
 }

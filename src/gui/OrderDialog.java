@@ -1,5 +1,6 @@
 package gui;
 
+import db.Database;
 import items.Item;
 import place.DestinationPlace;
 import place.Place;
@@ -18,8 +19,8 @@ public class OrderDialog extends JDialog {
     private JLabel addedItemsCountLabel;
     private JLabel stockLabel;
     private JLabel destinationPlaceLabel;
-    private JComboBox<Place> stockComboBox;
-    private JComboBox<Place> destinationPlaceComboBox;
+    private JComboBox<Stock> stockComboBox;
+    private JComboBox<DestinationPlace> destinationPlaceComboBox;
     private ArrayList<Item> items;
     private JButton addItemButton;
     private JButton okButton;
@@ -53,13 +54,13 @@ public class OrderDialog extends JDialog {
         nameTextField.setMaximumSize(new Dimension(500,30));
         pane.add(nameTextField);
         stockLabel = addLabel("From");
-        Place[] stocks = {new Stock("place1"),new Stock("place2")};
+        Stock[] stocks = Database.getStocks();
         //addComboBox(stockComboBox, stocks);
         stockComboBox = new JComboBox<>(stocks);
         stockComboBox.setMaximumSize(new Dimension(500,30));
         pane.add(stockComboBox);
         destinationPlaceLabel = addLabel("Where");
-        Place[] destinationPlaces = {new DestinationPlace("place3"),new DestinationPlace("place4")};
+        DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
         destinationPlaceComboBox = new JComboBox<>(destinationPlaces);
         destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
         pane.add(destinationPlaceComboBox);
