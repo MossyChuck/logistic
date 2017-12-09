@@ -63,20 +63,24 @@ public class AddingItemDialog extends JDialog {
 
     private void okButtonAction(){
         OrderDialog od = (OrderDialog)getOwner();
-        String name = nameTextField.getText();
         try {
+            String name = nameTextField.getText();
             double volume = Double.parseDouble(volumeTextField.getText());
             double weight = Double.parseDouble(weightTextField.getText());
+            if(name == "" || volume<=0 || weight <=0 || name == null){
+                System.out.println("checkInput");
+                return;
+            }
             Item item = new Item(name,volume,weight);
             od.addItem(item);
         }catch (NumberFormatException exception) {
-            System.out.println("parse err");
-        }finally {
-            nameTextField.setText("");
-            volumeTextField.setText("");
-            weightTextField.setText("");
-            setVisible(false);
+            System.out.println("check input");
+            return;
         }
+        nameTextField.setText("");
+        volumeTextField.setText("");
+        weightTextField.setText("");
+        setVisible(false);
     }
     private void cancelButtonAction(){
         nameTextField.setText("");

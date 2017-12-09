@@ -9,6 +9,7 @@ import place.Stock;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class OrderDialog extends JDialog {
@@ -64,7 +65,7 @@ public class OrderDialog extends JDialog {
         pane.add(stockComboBox);
         destinationPlaceLabel = addLabel("Where");
         DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
-        destinationPlaceComboBox = new JComboBox<>(destinationPlaces);
+        destinationPlaceComboBox = new JComboBox<>();
         destinationPlaceComboBox.setSelectedItem(null);
         destinationPlaceComboBox.setSize(new Dimension(500,30));
         dpcbPane = new JPanel();
@@ -100,9 +101,13 @@ public class OrderDialog extends JDialog {
         String name = nameTextField.getText();
         Stock stock = (Stock) stockComboBox.getSelectedItem();
         DestinationPlace destinationPlace = (DestinationPlace) destinationPlaceComboBox.getSelectedItem();
-
+        if(name == "" || stock == null || destinationPlace == null || items.size() == 0){
+            System.out.println("check input");
+            return;
+        }
         Order order = new Order(name,stock,destinationPlace,items);
         Database.insertOrder(order);
+        cancelButtonAction();
     }
     private void addItemButtonAction(){
         if(addingItemDialog == null){
@@ -114,8 +119,14 @@ public class OrderDialog extends JDialog {
     private void cancelButtonAction(){
         nameTextField.setText("");
         items.clear();
-        stockComboBox.setSelectedIndex(0);
-        destinationPlaceComboBox.setSelectedIndex(0);
+        stockComboBox.removeActionListener(stockComboBox.getActionListeners()[0]);
+        stockComboBox.setSelectedItem(null);
+        destinationPlaceComboBox = new JComboBox<>();
+        dpcbPane.removeAll();
+        dpcbPane.add(destinationPlaceComboBox);
+        dpcbPane.validate();
+        dpcbPane.repaint();
+        stockComboBox.addActionListener(ActionListener -> stockChanged());
         changeAddedItemsCountLabel();
         setVisible(false);
     }

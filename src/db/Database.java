@@ -2,6 +2,7 @@ package db;
 
 
 import gui.AddingPlaceDialog;
+import orders.Item;
 import orders.Order;
 import park.Vehicle;
 import place.DestinationPlace;
@@ -111,11 +112,6 @@ public class Database {
         }
         return destinationPlaces.toArray(new DestinationPlace[destinationPlaces.size()]);
     }
-    public static void insertRoads(ArrayList<Road> roads){
-        for (Road road:roads) {
-            insertRoad(road);
-        }
-    }
     public static void  insertRoad(Road road){
         String query = "insert into roads (destinationPlace,stock,length) values(\""+road.getDestinationPlace().getName()+"\",\""+road.getStock().getName()+"\","+road.getLength()+");";
         try {
@@ -137,6 +133,7 @@ public class Database {
         }
     }
     public static Road[] getRoadsFrom(Stock stock){
+
         String query = "select * from roads where stock = '"+stock.getName()+"';";
         ArrayList<Road> roads = new ArrayList<>();
         try{
@@ -187,8 +184,78 @@ public class Database {
         }
     }
 
-    public static void insertOrder(Order order){
+    public static void insertItem(Item item,int orderId){
+        String query = "insert into items (name,volume,weight,orderId) values('"+item.getName()+"',"+item.getVolume()+","+item.getWeight()+","+orderId+");";
+        try{
+            stmt.executeUpdate(query);
+        } catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+    }
 
+    public static void insertOrder(Order order){
+        String query = "insert into orders (customer,stock,destinationPlace) values('"+order.getCustomer()+"','"+order.getStock().getName()+"','"+order.getDestinationPlace().getName()+"');";
+        try {
+            stmt.executeUpdate(query);
+
+            query = "select id from orders where customer='"+order.getCustomer()+"' and stock = '"+order.getStock().getName()+"' and destinationPlace = '"+order.getDestinationPlace().getName()+"';";
+            rs = stmt.executeQuery(query);
+            rs.next();
+            int orderId = rs.getInt("id");
+            System.out.println(orderId);
+            for(Item item: order.getItems()){
+                insertItem(item, orderId);
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+
+    }
+
+    public static Order[] getOrders(){
+        ArrayList<Order> orders = new ArrayList<>();
+        String query = "select * from orders";
+        try {
+            rs = stmt.executeQuery(query);
+
+
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String customer = rs.getString("customer");
+                String stock = rs.getString("stock");
+                String destinationPlace = rs.getString("destinationPlace");
+                Order order = new Order(customer,new Stock(stock),new DestinationPlace(destinationPlace));
+                Item[] items = getItemsByOrderId(id);
+                for(Item item: items){
+                    order.addItem(item);
+                }
+                orders.add(order);
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+
+        return orders.toArray(new Order[orders.size()]);
+    }
+    public static Item[] getItemsByOrderId(int orderId){
+        ArrayList<Item> items = new ArrayList<>();
+        String query = "select * from items where orderId="+orderId+";";
+        try {
+            Statement statement = con.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                String name = resultSet.getString("name");
+                double volume = resultSet.getFloat("volume");
+                double weight = resultSet.getFloat("weight");
+                items.add(new Item(name,volume,weight));
+
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+
+        return items.toArray(new Item[items.size()]);
     }
 
 }

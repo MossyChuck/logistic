@@ -39,8 +39,11 @@ public class Gui extends JFrame{
         menuBar.add(fileMenu);
         JMenu orders = new JMenu("Orders");
         JMenuItem newOrder = new JMenuItem("New order");
+        JMenuItem showOrderMenuItem = new JMenuItem("Show orders");
         newOrder.addActionListener(ActionListener -> newOrderAction());
+        showOrderMenuItem.addActionListener(ActionListener -> buildOrderTable());
         orders.add(newOrder);
+        orders.add(showOrderMenuItem);
         menuBar.add(orders);
         JMenu placeMenu = new JMenu("Place");
         JMenuItem addPlaceMenuItem = new JMenuItem("Add place");
@@ -54,14 +57,17 @@ public class Gui extends JFrame{
         menuBar.add(placeMenu);
         JMenu parkMenu = new JMenu("Park");
         JMenuItem addVehicleMenuItem = new JMenuItem("Add vehicle");
+        JMenuItem showVehicleMenuItem = new JMenuItem("Show vehicle");
         JMenuItem deleteVehicleMenuItem = new JMenuItem("Delete vehicle");
         deleteVehicleMenuItem.addActionListener(ActionListener -> deleteVehicleAction());
+        showVehicleMenuItem.addActionListener(ActionListener ->buildVehicleTable());
         addVehicleMenuItem.addActionListener(ActionListener -> addVehicleAction());
         parkMenu.add(addVehicleMenuItem);
+        parkMenu.add(showVehicleMenuItem);
         parkMenu.add(deleteVehicleMenuItem);
         menuBar.add(parkMenu);
 
-        buildVehicleTable();
+        buildOrderTable();
 
 
         setJMenuBar(menuBar);
@@ -97,7 +103,20 @@ public class Gui extends JFrame{
         getContentPane().add(vehicleTableSP);
         getContentPane().validate();
         getContentPane().repaint();
+        pack();
 
+    }
+    public void buildOrderTable(){
+        OrderTableModel orderTableModel = new OrderTableModel();
+        JTable orderTable = new JTable(orderTableModel);
+        orderTable.setAutoCreateRowSorter(true);
+
+        JScrollPane sp = new JScrollPane(orderTable);
+        getContentPane().removeAll();
+        getContentPane().add(sp);
+        getContentPane().validate();
+        getContentPane().repaint();
+        pack();
     }
     private void newOrderAction(){
         if(orderDialog == null){

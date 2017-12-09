@@ -17,6 +17,15 @@ public class Order {
         this.destinationPlace = destinationPlace;
         this.items = items;
     }
+    public Order(String customer, Stock stock, DestinationPlace destinationPlace){
+        this.customer = customer;
+        this.stock = stock;
+        this.destinationPlace = destinationPlace;
+        this.items = new ArrayList<>();
+    }
+    public void addItem(Item item){
+        this.items.add(item);
+    }
 
     public Stock getStock() {
         return stock;
