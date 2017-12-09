@@ -14,11 +14,10 @@ public class Gui {
     private OrderDialog orderDialog;
     private AddingRoadDialog addingRoadDialog;
     private AddingPlaceDialog addingPlaceDialog;
+    private AddingVehicleDialog addingVehicleDialog;
 
     public Gui(){
-        orderButton = new JButton("make order");
-        adminLoginButton = new JButton("admin page");
-        driverLoginButton = new JButton("driver page");
+
     }
 
     public void build(){
@@ -36,24 +35,24 @@ public class Gui {
         orders.add(newOrder);
         menuBar.add(orders);
         JMenu placeMenu = new JMenu("Place");
-        JMenuItem addPlaceMenuItem = new JMenuItem("Add");
+        JMenuItem addPlaceMenuItem = new JMenuItem("Add place");
         addPlaceMenuItem.addActionListener(ActionListener -> addPlaceAction());
+        JMenuItem addRoadMenuItem = new JMenuItem("Add road");
+        addRoadMenuItem.addActionListener(ActionListener -> addRoadAction());
         placeMenu.add(addPlaceMenuItem);
+        placeMenu.add(addRoadMenuItem);
         JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
         placeMenu.add(deletePlaceMenuItem);
         menuBar.add(placeMenu);
-        JMenu roadMenu = new JMenu("Road");
-        JMenuItem addRoadMenuItem = new JMenuItem("Add");
-        addRoadMenuItem.addActionListener(ActionListener -> addRoadAction());
-        roadMenu.add(addRoadMenuItem);
-        menuBar.add(roadMenu);
+        JMenu parkMenu = new JMenu("Park");
+        JMenuItem addVehicleMenuItem = new JMenuItem("Add vehicle");
+        addVehicleMenuItem.addActionListener(ActionListener -> addVehicleAction());
+        parkMenu.add(addVehicleMenuItem);
+        menuBar.add(parkMenu);
 
 
 
         mainFrame.setJMenuBar(menuBar);
-        mainPanel.add(driverLoginButton);
-        mainPanel.add(orderButton);
-        mainPanel.add(adminLoginButton);
         mainFrame.getContentPane().add(mainPanel);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(new Dimension(400,400));
@@ -64,6 +63,13 @@ public class Gui {
             orderDialog = new OrderDialog(mainFrame);
         } else{
             orderDialog.setVisible(true);
+        }
+    }
+    private void addVehicleAction(){
+        if (addingVehicleDialog == null){
+            addingVehicleDialog = new AddingVehicleDialog(mainFrame);
+        }else{
+            addingVehicleDialog.setVisible(true);
         }
     }
     private void addPlaceAction(){

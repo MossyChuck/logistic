@@ -1,6 +1,7 @@
 package db;
 
 import gui.AddingPlaceDialog;
+import park.Vehicle;
 import place.DestinationPlace;
 import place.Place;
 import place.Road;
@@ -105,6 +106,16 @@ public class Database {
     }
     public static void  insertRoad(Road road){
         String query = "insert into roads (destinationPlace,stock,length) values(\""+road.getDestinationPlace().getName()+"\",\""+road.getStock().getName()+"\","+road.getLength()+");";
+        try {
+            stmt.executeUpdate(query);
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void insertVehicle(Vehicle vehicle){
+        String query = "insert into vehicles (model,maxSpeed,volume,maxWeight) values(\""+vehicle.getModel()+"\","+vehicle.getMaxSpeed()+","+vehicle.getVolume()+","+vehicle.getMaxWeight()+");";
         try {
             stmt.executeUpdate(query);
         }catch (SQLException exception){

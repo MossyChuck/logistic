@@ -1,23 +1,22 @@
 package gui;
 
+import db.Database;
 import items.Item;
-import place.DestinationPlace;
-import place.Place;
-import place.Stock;
+import park.Vehicle;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
-public class AddingItemDialog extends JDialog {
+public class AddingVehicleDialog extends JDialog {
     private JLabel nameLabel;
     private JTextField nameTextField;
     private JLabel volumeLabel;
     private JTextField volumeTextField;
     private JLabel weightLabel;
     private JTextField weightTextField;
+    private JLabel maxSpeedLabel;
+    private JTextField maxSpeedTextField;
     private JButton okButton;
     private JButton cancelButton;
     private Container pane;
@@ -37,17 +36,19 @@ public class AddingItemDialog extends JDialog {
         return textField;
     }
 
-    public AddingItemDialog(JDialog owner){
-        super(owner,"Add item",true);
+    public AddingVehicleDialog(JFrame owner){
+        super(owner,"Add vehicle",true);
         pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
-        nameLabel = addLabel("Name");
+        nameLabel = addLabel("Model");
         nameTextField = addTextField();
         volumeLabel = addLabel("Volume");
         volumeTextField = addTextField();
-        weightLabel = addLabel("Weight");
+        weightLabel = addLabel("Carrying capacity");
         weightTextField = addTextField();
+        maxSpeedLabel = addLabel("Max speed");
+        maxSpeedTextField = addTextField();
         okButton = new JButton("Ok");
         okButton.addActionListener(ActionListener -> okButtonAction());
         cancelButton = new JButton("Cancel");
@@ -66,19 +67,20 @@ public class AddingItemDialog extends JDialog {
     }
 
     private void okButtonAction(){
-        OrderDialog od = (OrderDialog)getOwner();
-        String name = nameTextField.getText();
+        String model = nameTextField.getText();
         try {
             double volume = Double.parseDouble(volumeTextField.getText());
             double weight = Double.parseDouble(weightTextField.getText());
-            Item item = new Item(name,volume,weight);
-            od.addItem(item);
+            double maxSpeed  = Double.parseDouble(maxSpeedTextField.getText());
+            Vehicle v = new Vehicle(model,maxSpeed,volume,weight);
+            Database.insertVehicle(v);
         }catch (NumberFormatException exception) {
             System.out.println("parse err");
         }finally {
             nameTextField.setText("");
             volumeTextField.setText("");
             weightTextField.setText("");
+            maxSpeedTextField.setText("");
             setVisible(false);
         }
     }
@@ -86,6 +88,7 @@ public class AddingItemDialog extends JDialog {
         nameTextField.setText("");
         volumeTextField.setText("");
         weightTextField.setText("");
+        maxSpeedTextField.setText("");
         setVisible(false);
     }
 }

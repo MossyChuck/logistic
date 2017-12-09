@@ -38,6 +38,7 @@ public class AddingPlaceDialog extends JDialog {
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;

@@ -1,14 +1,11 @@
 package gui;
 
-import items.Item;
 import place.DestinationPlace;
-import place.Place;
 import place.Road;
 import place.Stock;
 import db.Database;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class AddingRoadDialog extends JDialog {
     private JDialog owner;
@@ -25,6 +22,7 @@ public class AddingRoadDialog extends JDialog {
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;
@@ -72,7 +70,7 @@ public class AddingRoadDialog extends JDialog {
             Road road  = new Road((Stock)stockComboBox.getSelectedItem(),(DestinationPlace) destinationPlaceComboBox.getSelectedItem(),length);
             Database.insertRoad(road);
         }catch (NumberFormatException exception){
-
+            System.out.println("parse error");
         }finally {
             setVisible(false);
         }
