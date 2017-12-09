@@ -1,6 +1,7 @@
 package gui;
 
 import db.Database;
+import exception.MySqlException;
 import orders.Item;
 import orders.Order;
 import place.DestinationPlace;
@@ -47,66 +48,74 @@ public class OrderDialog extends JDialog {
 
     public OrderDialog(JFrame owner){
         super(owner,"Make order",true);
-        this.owner = this;
-        items = new ArrayList<>();
-        pane = getContentPane();
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        nameLabel = addLabel("Your name");
-        nameTextField = new JTextField();
-        nameTextField.setMaximumSize(new Dimension(500,30));
-        pane.add(nameTextField);
-        stockLabel = addLabel("From");
-        Stock[] stocks = Database.getStocks();
-        //addComboBox(stockComboBox, stocks);
-        stockComboBox = new JComboBox<>(stocks);
-        stockComboBox.setMaximumSize(new Dimension(500,30));
-        stockComboBox.setSelectedItem(null);
-        stockComboBox.addActionListener(ActionListener -> stockChanged());
-        pane.add(stockComboBox);
-        destinationPlaceLabel = addLabel("Where");
-        DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
-        destinationPlaceComboBox = new JComboBox<>();
-        destinationPlaceComboBox.setSelectedItem(null);
-        destinationPlaceComboBox.setSize(new Dimension(500,30));
-        dpcbPane = new JPanel();
-        dpcbPane.setSize(new Dimension(500,30));
-        dpcbPane.add(destinationPlaceComboBox);
-        pane.add(dpcbPane);
-        //pane.add(destinationPlaceComboBox);
-        addedItemsCountLabel = addLabel("Items added: "+items.size());
-        JPanel p2 = new JPanel();
-        addItemButton = new JButton("Add item");
-        p2.setLayout(new BoxLayout(p2,BoxLayout.X_AXIS));
-        p2.add(addItemButton);
-        pane.add(p2);
-        okButton = new JButton("Ok");
-        okButton.addActionListener(ActionListener -> okButtonAction());
-        addItemButton.addActionListener(ActionListener -> addItemButtonAction());
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(ActionListener -> cancelButtonAction());
-        JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
-        p.add(okButton);
-        p.add(cancelButton);
-        pane.add(p);
+        try {
+            this.owner = this;
+            items = new ArrayList<>();
+            pane = getContentPane();
+            pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+            nameLabel = addLabel("Your name");
+            nameTextField = new JTextField();
+            nameTextField.setMaximumSize(new Dimension(500, 30));
+            pane.add(nameTextField);
+            stockLabel = addLabel("From");
+            Stock[] stocks = Database.getStocks();
+            //addComboBox(stockComboBox, stocks);
+            stockComboBox = new JComboBox<>(stocks);
+            stockComboBox.setMaximumSize(new Dimension(500, 30));
+            stockComboBox.setSelectedItem(null);
+            stockComboBox.addActionListener(ActionListener -> stockChanged());
+            pane.add(stockComboBox);
+            destinationPlaceLabel = addLabel("Where");
+            DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
+            destinationPlaceComboBox = new JComboBox<>();
+            destinationPlaceComboBox.setSelectedItem(null);
+            destinationPlaceComboBox.setSize(new Dimension(500, 30));
+            dpcbPane = new JPanel();
+            dpcbPane.setSize(new Dimension(500, 30));
+            dpcbPane.add(destinationPlaceComboBox);
+            pane.add(dpcbPane);
+            //pane.add(destinationPlaceComboBox);
+            addedItemsCountLabel = addLabel("Items added: " + items.size());
+            JPanel p2 = new JPanel();
+            addItemButton = new JButton("Add item");
+            p2.setLayout(new BoxLayout(p2, BoxLayout.X_AXIS));
+            p2.add(addItemButton);
+            pane.add(p2);
+            okButton = new JButton("Ok");
+            okButton.addActionListener(ActionListener -> okButtonAction());
+            addItemButton.addActionListener(ActionListener -> addItemButtonAction());
+            cancelButton = new JButton("Cancel");
+            cancelButton.addActionListener(ActionListener -> cancelButtonAction());
+            JPanel p = new JPanel();
+            p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
+            p.add(okButton);
+            p.add(cancelButton);
+            pane.add(p);
 
-        //setSize(new Dimension(400,300));
-        pack();
-        setLocationRelativeTo(null);
+            //setSize(new Dimension(400,300));
+            pack();
+            setLocationRelativeTo(null);
 
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setVisible(true);
+            setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            setVisible(true);
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
     }
     private void okButtonAction(){
         String name = nameTextField.getText();
         Stock stock = (Stock) stockComboBox.getSelectedItem();
         DestinationPlace destinationPlace = (DestinationPlace) destinationPlaceComboBox.getSelectedItem();
         if(name == "" || stock == null || destinationPlace == null || items.size() == 0){
-            System.out.println("check input");
+            JOptionPane.showMessageDialog(null,"Check your input");
             return;
         }
         Order order = new Order(name,stock,destinationPlace,items);
-        Database.insertOrder(order);
+        try {
+            Database.insertOrder(order);
+        } catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
         cancelButtonAction();
     }
     private void addItemButtonAction(){
@@ -131,20 +140,27 @@ public class OrderDialog extends JDialog {
         setVisible(false);
     }
     private void stockChanged(){
-        Stock stock = (Stock)stockComboBox.getSelectedItem();
-        Road[] roads = Database.getRoadsFrom(stock);
-        DestinationPlace[] dps = new DestinationPlace[roads.length];
-        for(int i = 0; i<roads.length;i++){
-            dps[i] = roads[i].getDestinationPlace();
-        }
-        destinationPlaceComboBox = new JComboBox<>(dps);
-        destinationPlaceComboBox.setSelectedItem(null);
-        destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
+        try {
+            Stock stock = (Stock) stockComboBox.getSelectedItem();
 
-        dpcbPane.removeAll();
-        dpcbPane.add(destinationPlaceComboBox);
-        dpcbPane.validate();
-        dpcbPane.repaint();
+            Road[] roads = Database.getRoadsFrom(stock);
+            DestinationPlace[] dps = new DestinationPlace[roads.length];
+            for (int i = 0; i < roads.length; i++) {
+                dps[i] = roads[i].getDestinationPlace();
+            }
+            destinationPlaceComboBox = new JComboBox<>(dps);
+            destinationPlaceComboBox.setSelectedItem(null);
+            destinationPlaceComboBox.setMaximumSize(new Dimension(500, 30));
+
+            dpcbPane.removeAll();
+            dpcbPane.add(destinationPlaceComboBox);
+            dpcbPane.validate();
+            dpcbPane.repaint();
+        } catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null,"Error");
+        }
 
     }
 }

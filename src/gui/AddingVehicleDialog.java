@@ -2,6 +2,7 @@ package gui;
 
 
 import db.Database;
+import exception.MySqlException;
 import park.Vehicle;
 import javax.swing.*;
 import java.awt.*;
@@ -78,6 +79,8 @@ public class AddingVehicleDialog extends JDialog {
             Database.insertVehicle(v);
         }catch (NumberFormatException exception) {
             System.out.println("parse err");
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
         }finally {
             nameTextField.setText("");
             volumeTextField.setText("");

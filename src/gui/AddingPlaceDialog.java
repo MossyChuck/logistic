@@ -1,6 +1,7 @@
 package gui;
 
 import db.Database;
+import exception.MySqlException;
 import place.DestinationPlace;
 import place.Place;
 import place.Road;
@@ -81,7 +82,12 @@ public class AddingPlaceDialog extends JDialog {
         }else {
             place = new DestinationPlace(nameTextField.getText());
         }
-        Database.insertPlace(place);
+        try {
+            Database.insertPlace(place);
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+        JOptionPane.showMessageDialog(null,"success");
         setVisible(false);
     }
     private void cancelButtonAction(){

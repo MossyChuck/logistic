@@ -1,6 +1,7 @@
 package db;
 
 
+import exception.MySqlException;
 import gui.AddingPlaceDialog;
 import orders.Item;
 import orders.Order;
@@ -23,6 +24,7 @@ public class Database {
     private static final String url = "jdbc:mysql://localhost:3306/logistic";
     private static final String user = "root";
     private static final String password = "12345";
+    private static final String errorMessage = "Database error";
 
     // JDBC variables for opening and managing connection
     private static Connection con;
@@ -55,7 +57,7 @@ public class Database {
             System.out.println("closing connection error");
         }
     }
-    public static void insertPlace(Place place){
+    public static void insertPlace(Place place) throws MySqlException{
         AddingPlaceDialog.Type type;
         if(place instanceof Stock){
             type = AddingPlaceDialog.Type.STOCK;
@@ -67,10 +69,11 @@ public class Database {
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
         }
 
     }
-    public static Stock[] getStocks(){
+    public static Stock[] getStocks() throws MySqlException{
         String query = "select * from places where type=\""+AddingPlaceDialog.Type.STOCK+"\";";
         ArrayList<Stock> stocks = new ArrayList<>();
         try{
@@ -82,6 +85,7 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
         }finally {
             try{
                 rs.close();
@@ -91,7 +95,7 @@ public class Database {
         }
         return stocks.toArray(new Stock[stocks.size()]);
     }
-    public static DestinationPlace[] getDestinationPlaces(){
+    public static DestinationPlace[] getDestinationPlaces() throws MySqlException{
         String query = "select * from places where type=\""+AddingPlaceDialog.Type.DESTINATION_PLACE+"\";";
         ArrayList<DestinationPlace> destinationPlaces = new ArrayList<>();
         try{
@@ -103,36 +107,48 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
         }finally {
             try{
                 rs.close();
             }catch (SQLException exception){
                 System.out.println("closing connection error");
+                throw new MySqlException(errorMessage);
             }
         }
         return destinationPlaces.toArray(new DestinationPlace[destinationPlaces.size()]);
     }
-    public static void  insertRoad(Road road){
+    public static void  insertRoad(Road road) throws MySqlException{
         String query = "insert into roads (destinationPlace,stock,length) values(\""+road.getDestinationPlace().getName()+"\",\""+road.getStock().getName()+"\","+road.getLength()+");";
         try {
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try {
+                rs.close();
+            } catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
     }
-    public static void insertVehicle(Vehicle vehicle){
+    public static void insertVehicle(Vehicle vehicle) throws MySqlException{
         String query = "insert into vehicles (model,maxSpeed,volume,maxWeight) values(\""+vehicle.getModel()+"\","+vehicle.getMaxSpeed()+","+vehicle.getVolume()+","+vehicle.getMaxWeight()+");";
         try {
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try{
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
     }
-    public static Road[] getRoadsFrom(Stock stock){
+    public static Road[] getRoadsFrom(Stock stock) throws MySqlException{
 
         String query = "select * from roads where stock = '"+stock.getName()+"';";
         ArrayList<Road> roads = new ArrayList<>();
@@ -145,12 +161,18 @@ public class Database {
                 roads.add(new Road(stock,new DestinationPlace(destinatonPlace),length));
             }
         }catch (SQLException exception){
-
+            throw new MySqlException(errorMessage);
+        }finally {
+            try {
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
         return roads.toArray(new Road[roads.size()]);
     }
 
-    public static Vehicle[] getVehicles(){
+    public static Vehicle[] getVehicles() throws MySqlException{
         String query = "select * from vehicles;";
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         try{
@@ -165,35 +187,51 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
         }finally {
             try{
                 rs.close();
             }catch (SQLException exception){
                 System.out.println("closing connection error");
+                throw new MySqlException(errorMessage);
             }
         }
         return vehicles.toArray(new Vehicle[vehicles.size()]);
     }
 
-    public static void deleteVehicle(Vehicle vehicle){
+    public static void deleteVehicle(Vehicle vehicle) throws MySqlException{
         String query = "delete from vehicles where model='"+vehicle.getModel()+"' and maxSpeed = "+vehicle.getMaxSpeed()+" and volume = "+vehicle.getVolume()+" and maxWeight="+vehicle.getMaxWeight()+";";
         try{
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try {
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
     }
 
-    public static void insertItem(Item item,int orderId){
+    public static void insertItem(Item item,int orderId) throws MySqlException{
         String query = "insert into items (name,volume,weight,orderId) values('"+item.getName()+"',"+item.getVolume()+","+item.getWeight()+","+orderId+");";
         try{
             stmt.executeUpdate(query);
         } catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try{
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
     }
 
-    public static void insertOrder(Order order){
+    public static void insertOrder(Order order) throws MySqlException{
         String query = "insert into orders (customer,stock,destinationPlace) values('"+order.getCustomer()+"','"+order.getStock().getName()+"','"+order.getDestinationPlace().getName()+"');";
         try {
             stmt.executeUpdate(query);
@@ -208,11 +246,18 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try {
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
 
     }
 
-    public static Order[] getOrders(){
+    public static Order[] getOrders() throws MySqlException{
         ArrayList<Order> orders = new ArrayList<>();
         String query = "select * from orders";
         try {
@@ -233,11 +278,18 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
+        }finally {
+            try{
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
         }
 
         return orders.toArray(new Order[orders.size()]);
     }
-    public static Item[] getItemsByOrderId(int orderId){
+    public static Item[] getItemsByOrderId(int orderId) throws MySqlException{
         ArrayList<Item> items = new ArrayList<>();
         String query = "select * from items where orderId="+orderId+";";
         try {
@@ -253,6 +305,7 @@ public class Database {
             }
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
+            throw new MySqlException(errorMessage);
         }
 
         return items.toArray(new Item[items.size()]);

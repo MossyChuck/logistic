@@ -1,9 +1,11 @@
 package gui;
 
 import db.Database;
+import exception.MySqlException;
 import orders.Item;
 import orders.Order;
 
+import javax.swing.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
@@ -13,7 +15,11 @@ public class OrderTableModel implements TableModel {
     private Order[] orders;
 
     public OrderTableModel(){
-        orders = Database.getOrders();
+        try {
+            orders = Database.getOrders();
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
     }
     @Override
     public int getRowCount() {

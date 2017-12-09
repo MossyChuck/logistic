@@ -1,5 +1,6 @@
 package gui;
 
+import exception.MySqlException;
 import orders.Item;
 
 import javax.swing.*;
@@ -68,13 +69,14 @@ public class AddingItemDialog extends JDialog {
             double volume = Double.parseDouble(volumeTextField.getText());
             double weight = Double.parseDouble(weightTextField.getText());
             if(name == "" || volume<=0 || weight <=0 || name == null){
-                System.out.println("checkInput");
+                JOptionPane.showMessageDialog(null,"Check your input");
                 return;
             }
             Item item = new Item(name,volume,weight);
             od.addItem(item);
+            JOptionPane.showMessageDialog(null,"success");
         }catch (NumberFormatException exception) {
-            System.out.println("check input");
+            JOptionPane.showMessageDialog(null,"Check your input");
             return;
         }
         nameTextField.setText("");

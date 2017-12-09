@@ -1,8 +1,10 @@
 package gui;
 
 import db.Database;
+import exception.MySqlException;
 import park.Vehicle;
 
+import javax.swing.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
@@ -10,7 +12,11 @@ public class VehicleTableModel implements TableModel{
     private Vehicle[] data;
 
     public VehicleTableModel(){
-        data = Database.getVehicles();
+        try {
+            data = Database.getVehicles();
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
     }
     @Override
     public int getRowCount() {

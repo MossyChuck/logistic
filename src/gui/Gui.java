@@ -1,6 +1,7 @@
 package gui;
 
 import db.Database;
+import exception.MySqlException;
 import park.Vehicle;
 
 import javax.swing.*;
@@ -88,7 +89,11 @@ public class Gui extends JFrame{
         double volume = (double) vehicleTable.getValueAt(x,2);
         double maxWeight = (double) vehicleTable.getValueAt(x,3);
         v = new Vehicle(model,maxSpeed,volume,maxWeight);
-        Database.deleteVehicle(v);
+        try {
+            Database.deleteVehicle(v);
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
         buildVehicleTable();
     }
 
@@ -124,6 +129,7 @@ public class Gui extends JFrame{
         } else{
             orderDialog.setVisible(true);
         }
+        buildOrderTable();
     }
     private void addVehicleAction(){
         if (addingVehicleDialog == null){
