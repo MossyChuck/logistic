@@ -1,11 +1,15 @@
 package gui;
 
+import db.Database;
+import park.Vehicle;
+
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Gui {
+public class Gui extends JFrame{
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JButton orderButton;
@@ -15,13 +19,17 @@ public class Gui {
     private AddingRoadDialog addingRoadDialog;
     private AddingPlaceDialog addingPlaceDialog;
     private AddingVehicleDialog addingVehicleDialog;
+    private  VehicleTableModel vehicleTableModel;
+    private JTable vehicleTable;
+    private JScrollPane vehicleTableSP;
+    private RowSorter vehicleTableRowSorter;
+
 
     public Gui(){
 
     }
 
     public void build(){
-        mainFrame = new JFrame();
         mainPanel = new JPanel();
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
@@ -46,17 +54,48 @@ public class Gui {
         menuBar.add(placeMenu);
         JMenu parkMenu = new JMenu("Park");
         JMenuItem addVehicleMenuItem = new JMenuItem("Add vehicle");
+        JMenuItem deleteVehicleMenuItem = new JMenuItem("Delete vehicle");
+        deleteVehicleMenuItem.addActionListener(ActionListener -> deleteVehicleAction());
         addVehicleMenuItem.addActionListener(ActionListener -> addVehicleAction());
         parkMenu.add(addVehicleMenuItem);
+        parkMenu.add(deleteVehicleMenuItem);
         menuBar.add(parkMenu);
 
+        buildVehicleTable();
 
 
-        mainFrame.setJMenuBar(menuBar);
-        mainFrame.getContentPane().add(mainPanel);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(new Dimension(400,400));
-        mainFrame.setVisible(true);
+        setJMenuBar(menuBar);
+        //getContentPane().add(mainPanel);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        //setSize(new Dimension(400,400));
+        setVisible(true);
+    }
+
+    private void deleteVehicleAction(){
+        int x = vehicleTable.getSelectedRow();
+        Vehicle v;
+        String model = (String) vehicleTable.getValueAt(x,0);
+        double maxSpeed = (double) vehicleTable.getValueAt(x,1);
+        double volume = (double) vehicleTable.getValueAt(x,2);
+        double maxWeight = (double) vehicleTable.getValueAt(x,3);
+        v = new Vehicle(model,maxSpeed,volume,maxWeight);
+        Database.deleteVehicle(v);
+        buildVehicleTable();
+    }
+
+    public void buildVehicleTable(){
+        vehicleTableModel = new VehicleTableModel();
+        vehicleTable = new JTable(vehicleTableModel);
+        vehicleTable.setAutoCreateRowSorter(true);
+
+        vehicleTableSP = new JScrollPane(vehicleTable);
+
+        getContentPane().removeAll();
+        getContentPane().add(vehicleTableSP);
+        getContentPane().validate();
+        getContentPane().repaint();
+
     }
     private void newOrderAction(){
         if(orderDialog == null){
@@ -71,6 +110,7 @@ public class Gui {
         }else{
             addingVehicleDialog.setVisible(true);
         }
+        buildVehicleTable();
     }
     private void addPlaceAction(){
         if(addingPlaceDialog == null){

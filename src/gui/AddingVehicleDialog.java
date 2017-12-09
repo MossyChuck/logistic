@@ -1,9 +1,9 @@
 package gui;
 
+import app.Main;
 import db.Database;
 import items.Item;
 import park.Vehicle;
-
 import javax.swing.*;
 import javax.xml.crypto.Data;
 import java.awt.*;
@@ -67,6 +67,7 @@ public class AddingVehicleDialog extends JDialog {
     }
 
     private void okButtonAction(){
+
         String model = nameTextField.getText();
         try {
             double volume = Double.parseDouble(volumeTextField.getText());
@@ -74,6 +75,7 @@ public class AddingVehicleDialog extends JDialog {
             double maxSpeed  = Double.parseDouble(maxSpeedTextField.getText());
             Vehicle v = new Vehicle(model,maxSpeed,volume,weight);
             Database.insertVehicle(v);
+            //Main.getGui().buildVehicleTable();
         }catch (NumberFormatException exception) {
             System.out.println("parse err");
         }finally {

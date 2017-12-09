@@ -26,6 +26,16 @@ public class Database {
     private static Statement stmt;
     private static ResultSet rs;
 
+    public static ResultSet getRs() {
+        return rs;
+    }
+    public static Connection getCon() {
+        return con;
+    }
+    public static Statement getStmt() {
+        return stmt;
+    }
+
     public static void init(){
         try{
             con = DriverManager.getConnection(url,user,password);
@@ -125,6 +135,40 @@ public class Database {
         }
     }
 
+    public static Vehicle[] getVehicles(){
+        String query = "select * from vehicles;";
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+        try{
+            rs = stmt.executeQuery(query);
+
+            while(rs.next()){
+                String model = rs.getString("model");
+                double maxSpeed = rs.getFloat("maxSpeed");
+                double volume = rs.getFloat("volume");
+                double maxWeight = rs.getFloat("maxWeight");
+                vehicles.add(new Vehicle(model,maxSpeed,volume,maxWeight));
+            }
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }finally {
+            try{
+                rs.close();
+            }catch (SQLException exception){
+                System.out.println("closing connection error");
+            }
+        }
+        return vehicles.toArray(new Vehicle[vehicles.size()]);
+    }
+
+    public static void deleteVehicle(Vehicle vehicle){
+        String query = "delete from vehicles where model='"+vehicle.getModel()+"' and maxSpeed = "+vehicle.getMaxSpeed()+" and volume = "+vehicle.getVolume()+" and maxWeight="+vehicle.getMaxWeight()+";";
+        System.out.println(query);
+        try{
+            stmt.executeUpdate(query);
+        }catch (SQLException exception){
+            System.out.println(exception.getMessage());
+        }
+    }
 //    public static void main(String args[]) {
 //        init();
 //        ArrayList<Road> roads = new ArrayList<>();
