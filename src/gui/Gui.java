@@ -19,7 +19,7 @@ public class Gui extends JFrame{
     private AddingRoadDialog addingRoadDialog;
     private AddingPlaceDialog addingPlaceDialog;
     private AddingVehicleDialog addingVehicleDialog;
-    private  VehicleTableModel vehicleTableModel;
+    private VehicleTableModel vehicleTableModel;
     private JTable vehicleTable;
     private JScrollPane vehicleTableSP;
     private RowSorter vehicleTableRowSorter;
@@ -67,8 +67,10 @@ public class Gui extends JFrame{
         setJMenuBar(menuBar);
         //getContentPane().add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         pack();
         //setSize(new Dimension(400,400));
+
         setVisible(true);
     }
 

@@ -1,4 +1,4 @@
-package items;
+package orders;
 
 public class Item {
     private double volume;

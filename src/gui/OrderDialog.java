@@ -1,15 +1,14 @@
 package gui;
 
 import db.Database;
-import items.Item;
+import orders.Item;
+import orders.Order;
 import place.DestinationPlace;
-import place.Place;
+import place.Road;
 import place.Stock;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class OrderDialog extends JDialog {
@@ -26,12 +25,13 @@ public class OrderDialog extends JDialog {
     private JButton okButton;
     private JButton cancelButton;
     private Container pane;
+    private Container dpcbPane;
     private AddingItemDialog addingItemDialog;
 
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;
@@ -59,12 +59,19 @@ public class OrderDialog extends JDialog {
         //addComboBox(stockComboBox, stocks);
         stockComboBox = new JComboBox<>(stocks);
         stockComboBox.setMaximumSize(new Dimension(500,30));
+        stockComboBox.setSelectedItem(null);
+        stockComboBox.addActionListener(ActionListener -> stockChanged());
         pane.add(stockComboBox);
         destinationPlaceLabel = addLabel("Where");
         DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
         destinationPlaceComboBox = new JComboBox<>(destinationPlaces);
-        destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
-        pane.add(destinationPlaceComboBox);
+        destinationPlaceComboBox.setSelectedItem(null);
+        destinationPlaceComboBox.setSize(new Dimension(500,30));
+        dpcbPane = new JPanel();
+        dpcbPane.setSize(new Dimension(500,30));
+        dpcbPane.add(destinationPlaceComboBox);
+        pane.add(dpcbPane);
+        //pane.add(destinationPlaceComboBox);
         addedItemsCountLabel = addLabel("Items added: "+items.size());
         JPanel p2 = new JPanel();
         addItemButton = new JButton("Add item");
@@ -82,13 +89,20 @@ public class OrderDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        setSize(new Dimension(400,300));
-        //pack();
+        //setSize(new Dimension(400,300));
+        pack();
+        setLocationRelativeTo(null);
+
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
     private void okButtonAction(){
-        System.out.println("ok");
+        String name = nameTextField.getText();
+        Stock stock = (Stock) stockComboBox.getSelectedItem();
+        DestinationPlace destinationPlace = (DestinationPlace) destinationPlaceComboBox.getSelectedItem();
+
+        Order order = new Order(name,stock,destinationPlace,items);
+        Database.insertOrder(order);
     }
     private void addItemButtonAction(){
         if(addingItemDialog == null){
@@ -104,5 +118,22 @@ public class OrderDialog extends JDialog {
         destinationPlaceComboBox.setSelectedIndex(0);
         changeAddedItemsCountLabel();
         setVisible(false);
+    }
+    private void stockChanged(){
+        Stock stock = (Stock)stockComboBox.getSelectedItem();
+        Road[] roads = Database.getRoadsFrom(stock);
+        DestinationPlace[] dps = new DestinationPlace[roads.length];
+        for(int i = 0; i<roads.length;i++){
+            dps[i] = roads[i].getDestinationPlace();
+        }
+        destinationPlaceComboBox = new JComboBox<>(dps);
+        destinationPlaceComboBox.setSelectedItem(null);
+        destinationPlaceComboBox.setMaximumSize(new Dimension(500,30));
+
+        dpcbPane.removeAll();
+        dpcbPane.add(destinationPlaceComboBox);
+        dpcbPane.validate();
+        dpcbPane.repaint();
+
     }
 }

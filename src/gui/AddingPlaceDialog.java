@@ -38,14 +38,14 @@ public class AddingPlaceDialog extends JDialog {
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;
     }
 
     public AddingPlaceDialog(JFrame owner){
-        super(owner,"Add road",true);
+        super(owner,"Add place",true);
         this.owner = this;
         pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
@@ -67,8 +67,10 @@ public class AddingPlaceDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        setSize(new Dimension(400,300));
-        //pack();
+        //setSize(new Dimension(400,300));
+        pack();
+        setLocationRelativeTo(null);
+
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }

@@ -1,11 +1,9 @@
 package gui;
 
-import app.Main;
+
 import db.Database;
-import items.Item;
 import park.Vehicle;
 import javax.swing.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 
 public class AddingVehicleDialog extends JDialog {
@@ -24,7 +22,7 @@ public class AddingVehicleDialog extends JDialog {
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;
@@ -40,6 +38,7 @@ public class AddingVehicleDialog extends JDialog {
         super(owner,"Add vehicle",true);
         pane = getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
+        pane.setMinimumSize(new Dimension(200,200));
 
         nameLabel = addLabel("Model");
         nameTextField = addTextField();
@@ -55,12 +54,14 @@ public class AddingVehicleDialog extends JDialog {
         cancelButton.addActionListener(ActionListener -> cancelButtonAction());
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p,BoxLayout.X_AXIS));
+        p.setAlignmentX(Component.CENTER_ALIGNMENT);
         p.add(okButton);
         p.add(cancelButton);
         pane.add(p);
 
-        setSize(new Dimension(400,300));
-        //pack();
+        //setSize(new Dimension(400,300));
+        setLocationRelativeTo(null);
+        pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 
@@ -75,7 +76,6 @@ public class AddingVehicleDialog extends JDialog {
             double maxSpeed  = Double.parseDouble(maxSpeedTextField.getText());
             Vehicle v = new Vehicle(model,maxSpeed,volume,weight);
             Database.insertVehicle(v);
-            //Main.getGui().buildVehicleTable();
         }catch (NumberFormatException exception) {
             System.out.println("parse err");
         }finally {

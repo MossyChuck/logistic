@@ -1,6 +1,8 @@
 package db;
 
+
 import gui.AddingPlaceDialog;
+import orders.Order;
 import park.Vehicle;
 import place.DestinationPlace;
 import place.Place;
@@ -134,6 +136,22 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+    public static Road[] getRoadsFrom(Stock stock){
+        String query = "select * from roads where stock = '"+stock.getName()+"';";
+        ArrayList<Road> roads = new ArrayList<>();
+        try{
+            rs = stmt.executeQuery(query);
+
+            while(rs.next()){
+                int length = rs.getInt("length");
+                String destinatonPlace = rs.getString("destinationPlace");
+                roads.add(new Road(stock,new DestinationPlace(destinatonPlace),length));
+            }
+        }catch (SQLException exception){
+
+        }
+        return roads.toArray(new Road[roads.size()]);
+    }
 
     public static Vehicle[] getVehicles(){
         String query = "select * from vehicles;";
@@ -162,20 +180,15 @@ public class Database {
 
     public static void deleteVehicle(Vehicle vehicle){
         String query = "delete from vehicles where model='"+vehicle.getModel()+"' and maxSpeed = "+vehicle.getMaxSpeed()+" and volume = "+vehicle.getVolume()+" and maxWeight="+vehicle.getMaxWeight()+";";
-        System.out.println(query);
         try{
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
         }
     }
-//    public static void main(String args[]) {
-//        init();
-//        ArrayList<Road> roads = new ArrayList<>();
-//        roads.add(new Road("stock1","place1",20));
-//        roads.add(new Road("stock1","place2",30));
-//        roads.add(new Road("stock2","place2",50));
-//        insertRoads(roads);
-//    }
+
+    public static void insertOrder(Order order){
+
+    }
 
 }

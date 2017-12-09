@@ -1,15 +1,9 @@
 package gui;
 
-import items.Item;
-import place.DestinationPlace;
-import place.Place;
-import place.Stock;
+import orders.Item;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class AddingItemDialog extends JDialog {
     private JLabel nameLabel;
@@ -25,7 +19,7 @@ public class AddingItemDialog extends JDialog {
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.LEFT);
         label.setSize(new Dimension(500,50));
         pane.add(label);
         return label;
@@ -58,8 +52,10 @@ public class AddingItemDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        setSize(new Dimension(400,300));
-        //pack();
+        //setSize(new Dimension(400,300));
+        setLocationRelativeTo(null);
+
+        pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 
