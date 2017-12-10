@@ -206,12 +206,14 @@ public class Database {
         }catch (SQLException exception){
             System.out.println(exception.getMessage());
             throw new MySqlException(errorMessage);
-        }finally {
-            try {
-                rs.close();
-            }catch (SQLException e){
-                throw new MySqlException(errorMessage);
-            }
+        }
+    }
+    public static void deleteOrder(Order order) throws MySqlException{
+        String query = "delete from orders where customer='"+order.getCustomer()+"' and stock='"+order.getStock().getName()+"' and destinationPlace='"+order.getDestinationPlace().getName()+"';";
+        try{
+            stmt.executeUpdate(query);
+        }catch (SQLException exception){
+            throw  new MySqlException(errorMessage);
         }
     }
 

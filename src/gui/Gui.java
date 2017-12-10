@@ -2,7 +2,10 @@ package gui;
 
 import db.Database;
 import exception.MySqlException;
+import orders.Order;
 import park.Vehicle;
+import place.DestinationPlace;
+import place.Stock;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -11,11 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Gui extends JFrame{
-    private JFrame mainFrame;
     private JPanel mainPanel;
-    private JButton orderButton;
-    private JButton driverLoginButton;
-    private JButton adminLoginButton;
     private OrderDialog orderDialog;
     private AddingRoadDialog addingRoadDialog;
     private AddingPlaceDialog addingPlaceDialog;
@@ -23,7 +22,7 @@ public class Gui extends JFrame{
     private VehicleTableModel vehicleTableModel;
     private JTable vehicleTable;
     private JScrollPane vehicleTableSP;
-    private RowSorter vehicleTableRowSorter;
+    JTable orderTable;
 
 
     public Gui(){
@@ -41,10 +40,13 @@ public class Gui extends JFrame{
         JMenu orders = new JMenu("Orders");
         JMenuItem newOrder = new JMenuItem("New order");
         JMenuItem showOrderMenuItem = new JMenuItem("Show orders");
+        JMenuItem deleteOrderMenuItem = new JMenuItem("Delete order");
         newOrder.addActionListener(ActionListener -> newOrderAction());
         showOrderMenuItem.addActionListener(ActionListener -> buildOrderTable());
+        deleteOrderMenuItem.addActionListener(ActionListener -> deleteOrderAction());
         orders.add(newOrder);
         orders.add(showOrderMenuItem);
+        orders.add(deleteOrderMenuItem);
         menuBar.add(orders);
         JMenu placeMenu = new JMenu("Place");
         JMenuItem addPlaceMenuItem = new JMenuItem("Add place");
@@ -83,6 +85,10 @@ public class Gui extends JFrame{
 
     private void deleteVehicleAction(){
         int x = vehicleTable.getSelectedRow();
+        if(x == -1){
+            JOptionPane.showMessageDialog(null,"Select vehicle");
+            return;
+        }
         Vehicle v;
         String model = (String) vehicleTable.getValueAt(x,0);
         double maxSpeed = (double) vehicleTable.getValueAt(x,1);
@@ -94,7 +100,26 @@ public class Gui extends JFrame{
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
+        JOptionPane.showMessageDialog(null,"Deleted");
         buildVehicleTable();
+    }
+    private void deleteOrderAction(){
+        int x = orderTable.getSelectedRow();
+        if(x == -1){
+            JOptionPane.showMessageDialog(null, "Select order");
+            return;
+        }
+        String customer = (String) orderTable.getValueAt(x,0);
+        Stock stock = new Stock((String) orderTable.getValueAt(x,1));
+        DestinationPlace destinationPlace = new DestinationPlace((String) orderTable.getValueAt(x,2));
+        Order o = new Order(customer,stock,destinationPlace);
+        try{
+            Database.deleteOrder(o);
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+        JOptionPane.showMessageDialog(null ,"Deleted");
+        buildOrderTable();
     }
 
     public void buildVehicleTable(){
@@ -113,7 +138,7 @@ public class Gui extends JFrame{
     }
     public void buildOrderTable(){
         OrderTableModel orderTableModel = new OrderTableModel();
-        JTable orderTable = new JTable(orderTableModel);
+        orderTable = new JTable(orderTableModel);
         orderTable.setAutoCreateRowSorter(true);
 
         JScrollPane sp = new JScrollPane(orderTable);
@@ -125,7 +150,7 @@ public class Gui extends JFrame{
     }
     private void newOrderAction(){
         if(orderDialog == null){
-            orderDialog = new OrderDialog(mainFrame);
+            orderDialog = new OrderDialog(this);
         } else{
             orderDialog.setVisible(true);
         }
@@ -133,7 +158,7 @@ public class Gui extends JFrame{
     }
     private void addVehicleAction(){
         if (addingVehicleDialog == null){
-            addingVehicleDialog = new AddingVehicleDialog(mainFrame);
+            addingVehicleDialog = new AddingVehicleDialog(this);
         }else{
             addingVehicleDialog.setVisible(true);
         }
@@ -141,14 +166,14 @@ public class Gui extends JFrame{
     }
     private void addPlaceAction(){
         if(addingPlaceDialog == null){
-            addingPlaceDialog = new AddingPlaceDialog(mainFrame);
+            addingPlaceDialog = new AddingPlaceDialog(this);
         }else{
             addingPlaceDialog.setVisible(true);
         }
     }
     private void addRoadAction(){
         if(addingRoadDialog == null){
-            addingRoadDialog = new AddingRoadDialog(mainFrame);
+            addingRoadDialog = new AddingRoadDialog(this);
         }else{
             addingRoadDialog.setVisible(true);
         }
