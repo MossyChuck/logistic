@@ -22,7 +22,8 @@ public class Gui extends JFrame{
     private VehicleTableModel vehicleTableModel;
     private JTable vehicleTable;
     private JScrollPane vehicleTableSP;
-    JTable orderTable;
+    private JTable orderTable;
+    private JTable roadTable;
 
 
     public Gui(){
@@ -52,9 +53,12 @@ public class Gui extends JFrame{
         JMenuItem addPlaceMenuItem = new JMenuItem("Add place");
         addPlaceMenuItem.addActionListener(ActionListener -> addPlaceAction());
         JMenuItem addRoadMenuItem = new JMenuItem("Add road");
+        JMenuItem showRoadMenuItem = new JMenuItem("Show roads");
         addRoadMenuItem.addActionListener(ActionListener -> addRoadAction());
+        showRoadMenuItem.addActionListener(ActionListener -> buildRoadTable());
         placeMenu.add(addPlaceMenuItem);
         placeMenu.add(addRoadMenuItem);
+        placeMenu.add(showRoadMenuItem);
         JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
         placeMenu.add(deletePlaceMenuItem);
         menuBar.add(placeMenu);
@@ -123,7 +127,11 @@ public class Gui extends JFrame{
     }
 
     public void buildVehicleTable(){
-        vehicleTableModel = new VehicleTableModel();
+        try {
+            vehicleTableModel = new VehicleTableModel();
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
         vehicleTable = new JTable(vehicleTableModel);
         vehicleTable.setAutoCreateRowSorter(true);
 
@@ -137,11 +145,34 @@ public class Gui extends JFrame{
 
     }
     public void buildOrderTable(){
-        OrderTableModel orderTableModel = new OrderTableModel();
+        OrderTableModel orderTableModel;
+        try {
+            orderTableModel = new OrderTableModel();
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+            return;
+        }
         orderTable = new JTable(orderTableModel);
         orderTable.setAutoCreateRowSorter(true);
 
         JScrollPane sp = new JScrollPane(orderTable);
+        getContentPane().removeAll();
+        getContentPane().add(sp);
+        getContentPane().validate();
+        getContentPane().repaint();
+        pack();
+    }
+    public void buildRoadTable(){
+        RoadTableModel roadTableModel = null;
+        try {
+            roadTableModel = new RoadTableModel();
+        } catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+        roadTable = new JTable(roadTableModel);
+        roadTable.setAutoCreateRowSorter(true);
+
+        JScrollPane sp = new JScrollPane(roadTable);
         getContentPane().removeAll();
         getContentPane().add(sp);
         getContentPane().validate();
@@ -170,6 +201,7 @@ public class Gui extends JFrame{
         }else{
             addingPlaceDialog.setVisible(true);
         }
+
     }
     private void addRoadAction(){
         if(addingRoadDialog == null){
@@ -177,6 +209,7 @@ public class Gui extends JFrame{
         }else{
             addingRoadDialog.setVisible(true);
         }
+        buildRoadTable();
     }
 
 }

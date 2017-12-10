@@ -28,4 +28,16 @@ public class Road {
     public int getLength() {
         return length;
     }
+
+    public void setDestinationPlace(DestinationPlace destinationPlace) {
+        this.destinationPlace = destinationPlace;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
 }

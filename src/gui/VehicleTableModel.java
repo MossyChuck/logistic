@@ -11,11 +11,11 @@ import javax.swing.table.TableModel;
 public class VehicleTableModel implements TableModel{
     private Vehicle[] data;
 
-    public VehicleTableModel(){
+    public VehicleTableModel() throws MySqlException{
         try {
             data = Database.getVehicles();
         }catch (MySqlException e){
-            JOptionPane.showMessageDialog(null,e.getMessage());
+            throw e;
         }
     }
     @Override

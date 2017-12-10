@@ -2,53 +2,59 @@ package gui;
 
 import db.Database;
 import exception.MySqlException;
-import orders.Item;
-import orders.Order;
+import place.DestinationPlace;
+import place.Road;
+import place.Stock;
 
 import javax.swing.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
 
-public class OrderTableModel implements TableModel {
+public class RoadTableModel implements TableModel {
+    private Road[] roads;
 
-    private Order[] orders;
-
-    public OrderTableModel() throws MySqlException{
-        try {
-            orders = Database.getOrders();
+    public RoadTableModel() throws MySqlException{
+        try{
+            roads = Database.getRoads();
         }catch (MySqlException e){
             throw e;
         }
     }
+
     @Override
     public int getRowCount() {
-        return orders.length;
+        return roads.length;
     }
 
     @Override
     public int getColumnCount() {
-        return 4;
+        return 3;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
         switch (columnIndex){
             case 0:
-                return "Customer";
-            case 1:
                 return "Stock";
-            case 2:
+            case 1:
                 return "Destination place";
-            case 3:
-                return "Items";
+            case 2:
+                return "Length";
         }
         return "";
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        return String.class;
+        switch (columnIndex){
+            case 0:
+                return String.class;
+            case 1:
+                return String.class;
+            case 2:
+                return int.class;
+        }
+        return Object.class;
     }
 
     @Override
@@ -56,33 +62,33 @@ public class OrderTableModel implements TableModel {
         return false;
     }
 
-    private String itemsToString(ArrayList<Item> items){
-        String result = "";
-        for(Item item: items){
-            result+=item.getName()+", ";
-        }
-        return result;
-    }
-
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Order order = orders[rowIndex];
+        Road road = roads[rowIndex];
         switch (columnIndex){
             case 0:
-                return order.getCustomer();
+                return road.getStock().getName();
             case 1:
-                return order.getStock().getName();
+                return road.getDestinationPlace().getName();
             case 2:
-                return order.getDestinationPlace().getName();
-            case 3:
-                return itemsToString(order.getItems());
+                return road.getLength();
         }
         return "";
     }
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-
+        Road road = roads[rowIndex];
+        switch (columnIndex){
+            case 0:
+                road.setStock(new Stock((String) aValue));
+                return;
+            case 1:
+                road.setDestinationPlace(new DestinationPlace((String) aValue));
+                return;
+            case 2:
+                road.setLength(Integer.parseInt((String) aValue));
+        }
     }
 
     @Override

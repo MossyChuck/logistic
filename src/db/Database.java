@@ -171,6 +171,29 @@ public class Database {
         }
         return roads.toArray(new Road[roads.size()]);
     }
+    public static Road[] getRoads() throws MySqlException{
+        String query = "select * from roads;";
+        ArrayList<Road> roads = new ArrayList<>();
+        try{
+            rs = stmt.executeQuery(query);
+
+            while(rs.next()){
+                int length = rs.getInt("length");
+                String destinatonPlace = rs.getString("destinationPlace");
+                String stock = rs.getString("stock");
+                roads.add(new Road(new Stock(stock),new DestinationPlace(destinatonPlace),length));
+            }
+        }catch (SQLException exception){
+            throw new MySqlException(errorMessage);
+        }finally {
+            try {
+                rs.close();
+            }catch (SQLException e){
+                throw new MySqlException(errorMessage);
+            }
+        }
+        return roads.toArray(new Road[roads.size()]);
+    }
 
     public static Vehicle[] getVehicles() throws MySqlException{
         String query = "select * from vehicles;";
