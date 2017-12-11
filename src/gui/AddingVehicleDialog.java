@@ -78,7 +78,7 @@ public class AddingVehicleDialog extends JDialog {
             Vehicle v = new Vehicle(model,maxSpeed,volume,weight);
             Database.insertVehicle(v);
         }catch (NumberFormatException exception) {
-            System.out.println("parse err");
+            JOptionPane.showMessageDialog(null,"Check your input");
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }finally {

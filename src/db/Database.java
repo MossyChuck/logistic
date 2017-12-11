@@ -239,6 +239,14 @@ public class Database {
             throw  new MySqlException(errorMessage);
         }
     }
+    public static void deleteRoad(Road road) throws MySqlException{
+        String query = "delete from roads where stock='"+road.getStock().getName()+"' and destinationPlace='"+road.getDestinationPlace().getName()+"' and length="+road.getLength()+";";
+        try{
+            stmt.executeUpdate(query);
+        }catch (SQLException exception){
+            throw new MySqlException(errorMessage);
+        }
+    }
 
     public static void insertItem(Item item,int orderId) throws MySqlException{
         String query = "insert into items (name,volume,weight,orderId) values('"+item.getName()+"',"+item.getVolume()+","+item.getWeight()+","+orderId+");";

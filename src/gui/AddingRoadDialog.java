@@ -81,9 +81,10 @@ public class AddingRoadDialog extends JDialog {
 
         }catch (NumberFormatException exception){
             JOptionPane.showMessageDialog(null,"Check your input");
-        }finally {
-            setVisible(false);
+            return;
+
         }
+        cancelButtonAction();
     }
     private void cancelButtonAction(){
         lengthTextField.setText("");

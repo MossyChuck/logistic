@@ -5,6 +5,7 @@ import exception.MySqlException;
 import orders.Order;
 import park.Vehicle;
 import place.DestinationPlace;
+import place.Road;
 import place.Stock;
 
 import javax.swing.*;
@@ -54,13 +55,14 @@ public class Gui extends JFrame{
         addPlaceMenuItem.addActionListener(ActionListener -> addPlaceAction());
         JMenuItem addRoadMenuItem = new JMenuItem("Add road");
         JMenuItem showRoadMenuItem = new JMenuItem("Show roads");
+        JMenuItem deleteRoadMenuItem = new JMenuItem("Delete road");
         addRoadMenuItem.addActionListener(ActionListener -> addRoadAction());
         showRoadMenuItem.addActionListener(ActionListener -> buildRoadTable());
+        deleteRoadMenuItem.addActionListener(ActionListener -> deleteRoadAction());
         placeMenu.add(addPlaceMenuItem);
         placeMenu.add(addRoadMenuItem);
         placeMenu.add(showRoadMenuItem);
-        JMenuItem deletePlaceMenuItem = new JMenuItem("Delete place");
-        placeMenu.add(deletePlaceMenuItem);
+        placeMenu.add(deleteRoadMenuItem);
         menuBar.add(placeMenu);
         JMenu parkMenu = new JMenu("Park");
         JMenuItem addVehicleMenuItem = new JMenuItem("Add vehicle");
@@ -124,6 +126,28 @@ public class Gui extends JFrame{
         }
         JOptionPane.showMessageDialog(null ,"Deleted");
         buildOrderTable();
+    }
+    private void deleteRoadAction(){
+        if(roadTable == null){
+            JOptionPane.showMessageDialog(null, "Select road");
+            return;
+        }
+        int x = roadTable.getSelectedRow();
+        if(x == -1){
+            JOptionPane.showMessageDialog(null, "Select road");
+            return;
+        }
+        Stock stock = new Stock((String) roadTable.getValueAt(x,0));
+        DestinationPlace destinationPlace = new DestinationPlace((String) roadTable.getValueAt(x,1));
+        int length = (int) roadTable.getValueAt(x,2);
+        Road r = new Road(stock,destinationPlace,length);
+        try{
+            Database.deleteRoad(r);
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+        JOptionPane.showMessageDialog(null,"Deleted");
+        buildRoadTable();
     }
 
     public void buildVehicleTable(){
