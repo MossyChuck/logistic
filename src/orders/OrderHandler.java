@@ -1,5 +1,6 @@
 package orders;
 
+import app.Main;
 import db.Database;
 import exception.MySqlException;
 import park.Vehicle;
@@ -35,7 +36,7 @@ public class OrderHandler {
                     currentVehicle = v;
                     double time = getLength(roads,order.getDestinationPlace()) / v.getMaxSpeed();
                     vehicles.remove(v);
-                    message += "Order #1 handled by " + v.getModel() + ", it takes " + time + " hours\n.";
+                    message += "Order #1 handled by " + v.getModel() + ", it takes " + String.format("%.2f",time) + " hours.\n";
                     handledOrders.add(order);
                     break;
                 }
@@ -57,11 +58,12 @@ public class OrderHandler {
         }
         message += "Delete handled orders?";
         int isDeletingOrders = JOptionPane.showConfirmDialog(null, message);
-        if(isDeletingOrders != 0){
+        if(isDeletingOrders == JOptionPane.YES_OPTION){
             try{
                 for(Order order: handledOrders) {
                     Database.deleteOrder(order);
                 }
+                Main.getGui().buildOrderTable();
             }catch (MySqlException e){
                 JOptionPane.showMessageDialog(null,e.getMessage());
             }
@@ -71,7 +73,7 @@ public class OrderHandler {
     private static int getLength(ArrayList<Road> roads, DestinationPlace destinationPlace){
         int length = 1;
         for(Road road: roads){
-            if(destinationPlace == road.getDestinationPlace()){
+            if(destinationPlace.getName().equals(road.getDestinationPlace().getName())){
                 length = road.getLength();
                 break;
             }
