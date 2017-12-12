@@ -56,13 +56,6 @@ public class OrderTableModel implements TableModel {
         return false;
     }
 
-    private String itemsToString(ArrayList<Item> items){
-        String result = "";
-        for(Item item: items){
-            result+=item.getName()+", ";
-        }
-        return result;
-    }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -75,7 +68,7 @@ public class OrderTableModel implements TableModel {
             case 2:
                 return order.getDestinationPlace().getName();
             case 3:
-                return itemsToString(order.getItems());
+                return order.itemsToString();
         }
         return "";
     }

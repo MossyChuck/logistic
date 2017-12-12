@@ -1,6 +1,8 @@
 package park;
 
-public class Vehicle {
+import java.util.Comparator;
+
+public class Vehicle{
     private String model;
     private double maxSpeed;
     private double volume;
@@ -51,4 +53,33 @@ public class Vehicle {
     public void setModel(String model) {
         this.model = model;
     }
+
+    public static Comparator<Vehicle> VehicleComparator = new Comparator<Vehicle>(){
+        public int compare(Vehicle v1, Vehicle v2) {
+            double deltaWeight = v1.getMaxWeight() - v2.getMaxWeight();
+            if(deltaWeight>0){
+                return 1;
+            }else if(deltaWeight < 0){
+                return -1;
+            }else {
+                double deltaVolume = v1.getVolume() - v2.getVolume();
+                if (deltaVolume > 0) {
+                    return 1;
+                } else if (deltaVolume < 0){
+                    return -1;
+                }else {
+                    double deltaSpeed = v1.getMaxSpeed() - v2.getMaxSpeed();
+                    if(deltaSpeed > 0){
+                        return 1;
+                    }else if(deltaSpeed < 0){
+                        return -1;
+                    }else {
+                        return 0;
+                    }
+                }
+            }
+
+        }
+    };
+
 }

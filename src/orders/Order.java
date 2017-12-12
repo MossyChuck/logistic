@@ -42,4 +42,16 @@ public class Order {
     public String getCustomer() {
         return customer;
     }
+
+    @Override
+    public String toString() {
+        return "Customer: "+customer+", Stock: " + stock + ", destination place: " + destinationPlace + ", items: " + itemsToString();
+    }
+    public String itemsToString(){
+        String result = "";
+        for(Item item: items){
+            result+=item.getName()+", ";
+        }
+        return result;
+    }
 }

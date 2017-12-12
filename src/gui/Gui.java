@@ -3,12 +3,14 @@ package gui;
 import db.Database;
 import exception.MySqlException;
 import orders.Order;
+import orders.OrderHandler;
 import park.Vehicle;
 import place.DestinationPlace;
 import place.Road;
 import place.Stock;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 
 public class Gui extends JFrame{
     private JPanel mainPanel;
@@ -38,12 +40,15 @@ public class Gui extends JFrame{
         JMenu orders = new JMenu("Orders");
         JMenuItem newOrder = new JMenuItem("New order");
         JMenuItem showOrderMenuItem = new JMenuItem("Show orders");
+        JMenuItem handleOrdersMenuItem = new JMenuItem("Handle orders");
         JMenuItem deleteOrderMenuItem = new JMenuItem("Delete order");
         newOrder.addActionListener(ActionListener -> newOrderAction());
         showOrderMenuItem.addActionListener(ActionListener -> buildOrderTable());
+        handleOrdersMenuItem.addActionListener(ActionListener -> OrderHandler.handle());
         deleteOrderMenuItem.addActionListener(ActionListener -> deleteOrderAction());
         orders.add(newOrder);
         orders.add(showOrderMenuItem);
+        orders.add(handleOrdersMenuItem);
         orders.add(deleteOrderMenuItem);
         menuBar.add(orders);
         JMenu placeMenu = new JMenu("Place");

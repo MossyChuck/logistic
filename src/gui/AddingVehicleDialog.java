@@ -83,6 +83,7 @@ public class AddingVehicleDialog extends JDialog {
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
+        cancelButtonAction();
     }
     private void cancelButtonAction(){
         nameTextField.setText("");
