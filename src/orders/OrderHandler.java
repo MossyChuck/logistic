@@ -15,9 +15,10 @@ import java.util.Collections;
 public class OrderHandler {
     private static ArrayList<Order> orders;
     private static ArrayList<Vehicle> vehicles;
-    private static String message = "";
+    private static String message ;
     public static void handle(){
         loadData();
+        message = "";
         ArrayList<Order> handledOrders = new ArrayList<>();
         for(Order order: orders){
             ArrayList<Road> roads = loadRoads(order.getStock());
@@ -50,7 +51,21 @@ public class OrderHandler {
                 message += order + "\n";
             }
         }
-        JOptionPane.showMessageDialog(null, message);
+        if(handledOrders.size() == 0){
+            JOptionPane.showMessageDialog(null, message);
+            return;
+        }
+        message += "Delete handled orders?";
+        int isDeletingOrders = JOptionPane.showConfirmDialog(null, message);
+        if(isDeletingOrders != 0){
+            try{
+                for(Order order: handledOrders) {
+                    Database.deleteOrder(order);
+                }
+            }catch (MySqlException e){
+                JOptionPane.showMessageDialog(null,e.getMessage());
+            }
+        }
     }
 
     private static int getLength(ArrayList<Road> roads, DestinationPlace destinationPlace){
