@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class OrderDialog extends JDialog {
+public class AddingOrderDialog extends JDialog {
     private JDialog owner;
     private JLabel nameLabel;
     private JTextField nameTextField;
@@ -32,9 +32,9 @@ public class OrderDialog extends JDialog {
 
     private JLabel addLabel(String name){
         JLabel label = new JLabel(name);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
-        label.setSize(new Dimension(500,50));
+        //label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //label.setHorizontalAlignment(SwingConstants.LEFT);
+        //label.setSize(new Dimension(300,50));
         pane.add(label);
         return label;
     }
@@ -46,7 +46,7 @@ public class OrderDialog extends JDialog {
         addedItemsCountLabel.setText("Items added: "+items.size());
     }
 
-    public OrderDialog(JFrame owner){
+    public AddingOrderDialog(JFrame owner){
         super(owner,"Make order",true);
         try {
             this.owner = this;
@@ -61,18 +61,14 @@ public class OrderDialog extends JDialog {
             Stock[] stocks = Database.getStocks();
             //addComboBox(stockComboBox, stocks);
             stockComboBox = new JComboBox<>(stocks);
-            stockComboBox.setMaximumSize(new Dimension(500, 30));
+            stockComboBox.setMaximumSize(new Dimension(400, 30));
             stockComboBox.setSelectedItem(null);
             stockComboBox.addActionListener(ActionListener -> stockChanged());
             pane.add(stockComboBox);
-            destinationPlaceLabel = addLabel("Where");
-            DestinationPlace[] destinationPlaces = Database.getDestinationPlaces();
-            destinationPlaceComboBox = new JComboBox<>();
-            destinationPlaceComboBox.setSelectedItem(null);
-            destinationPlaceComboBox.setSize(new Dimension(500, 30));
             dpcbPane = new JPanel();
-            dpcbPane.setSize(new Dimension(500, 30));
-            dpcbPane.add(destinationPlaceComboBox);
+            dpcbPane.setLayout(new BoxLayout(dpcbPane,BoxLayout.Y_AXIS));
+            //dpcbPane.setSize(new Dimension(500, 30));
+//            dpcbPane.add(destinationPlaceComboBox);
             pane.add(dpcbPane);
             //pane.add(destinationPlaceComboBox);
             addedItemsCountLabel = addLabel("Items added: " + items.size());
@@ -92,8 +88,9 @@ public class OrderDialog extends JDialog {
             p.add(cancelButton);
             pane.add(p);
 
-            //setSize(new Dimension(400,300));
-            pack();
+            setSize(new Dimension(300,210));
+            //setResizable(false);
+            //pack();
             setLocationRelativeTo(null);
 
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -132,7 +129,6 @@ public class OrderDialog extends JDialog {
         stockComboBox.setSelectedItem(null);
         destinationPlaceComboBox = new JComboBox<>();
         dpcbPane.removeAll();
-        dpcbPane.add(destinationPlaceComboBox);
         dpcbPane.validate();
         dpcbPane.repaint();
         stockComboBox.addActionListener(ActionListener -> stockChanged());
@@ -150,12 +146,19 @@ public class OrderDialog extends JDialog {
             }
             destinationPlaceComboBox = new JComboBox<>(dps);
             destinationPlaceComboBox.setSelectedItem(null);
-            destinationPlaceComboBox.setMaximumSize(new Dimension(500, 30));
+            destinationPlaceComboBox.setSize(new Dimension(300, 30));
 
+            if(destinationPlaceLabel == null){
+                destinationPlaceLabel = new JLabel("Where");
+
+            }
             dpcbPane.removeAll();
+            dpcbPane.add(destinationPlaceLabel);
             dpcbPane.add(destinationPlaceComboBox);
             dpcbPane.validate();
             dpcbPane.repaint();
+            pane.validate();
+            pane.repaint();
         } catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }catch (Exception e){

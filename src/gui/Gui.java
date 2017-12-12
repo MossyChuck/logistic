@@ -9,14 +9,10 @@ import place.Road;
 import place.Stock;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Gui extends JFrame{
     private JPanel mainPanel;
-    private OrderDialog orderDialog;
+    private AddingOrderDialog addingOrderDialog;
     private AddingRoadDialog addingRoadDialog;
     private AddingPlaceDialog addingPlaceDialog;
     private AddingVehicleDialog addingVehicleDialog;
@@ -123,6 +119,7 @@ public class Gui extends JFrame{
             Database.deleteOrder(o);
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null, e.getMessage());
+            return;
         }
         JOptionPane.showMessageDialog(null ,"Deleted");
         buildOrderTable();
@@ -204,10 +201,10 @@ public class Gui extends JFrame{
         pack();
     }
     private void newOrderAction(){
-        if(orderDialog == null){
-            orderDialog = new OrderDialog(this);
+        if(addingOrderDialog == null){
+            addingOrderDialog = new AddingOrderDialog(this);
         } else{
-            orderDialog.setVisible(true);
+            addingOrderDialog.setVisible(true);
         }
         buildOrderTable();
     }

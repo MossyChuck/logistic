@@ -1,6 +1,5 @@
 package gui;
 
-import exception.MySqlException;
 import orders.Item;
 
 import javax.swing.*;
@@ -53,17 +52,18 @@ public class AddingItemDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        //setSize(new Dimension(400,300));
+        setSize(new Dimension(300,160));
+        setResizable(false);
         setLocationRelativeTo(null);
 
-        pack();
+        //pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 
     }
 
     private void okButtonAction(){
-        OrderDialog od = (OrderDialog)getOwner();
+        AddingOrderDialog od = (AddingOrderDialog)getOwner();
         try {
             String name = nameTextField.getText();
             double volume = Double.parseDouble(volumeTextField.getText());

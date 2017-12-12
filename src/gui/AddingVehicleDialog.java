@@ -60,9 +60,10 @@ public class AddingVehicleDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        //setSize(new Dimension(400,300));
+        setSize(new Dimension(300,200));
+        setResizable(false);
         setLocationRelativeTo(null);
-        pack();
+        //pack();
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
 
@@ -81,12 +82,6 @@ public class AddingVehicleDialog extends JDialog {
             JOptionPane.showMessageDialog(null,"Check your input");
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
-        }finally {
-            nameTextField.setText("");
-            volumeTextField.setText("");
-            weightTextField.setText("");
-            maxSpeedTextField.setText("");
-            setVisible(false);
         }
     }
     private void cancelButtonAction(){

@@ -68,8 +68,9 @@ public class AddingPlaceDialog extends JDialog {
         p.add(cancelButton);
         pane.add(p);
 
-        //setSize(new Dimension(400,300));
-        pack();
+        setSize(new Dimension(300,120));
+        setResizable(false);
+        //pack();
         setLocationRelativeTo(null);
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -88,7 +89,7 @@ public class AddingPlaceDialog extends JDialog {
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
         JOptionPane.showMessageDialog(null,"success");
-        setVisible(false);
+        cancelButtonAction();
     }
     private void cancelButtonAction(){
         nameTextField.setText("");

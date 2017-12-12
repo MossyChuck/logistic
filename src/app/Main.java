@@ -9,7 +9,7 @@ public class Main {
         Database.init();
         gui = new Gui();
         gui.build();
-        //new OrderDialog(new JFrame("frame"));
+        //new AddingOrderDialog(new JFrame("frame"));
     }
 
     public static Gui getGui() {

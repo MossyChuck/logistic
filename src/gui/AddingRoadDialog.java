@@ -59,9 +59,10 @@ public class AddingRoadDialog extends JDialog {
             p.add(okButton);
             p.add(cancelButton);
             pane.add(p);
-            //setSize(new Dimension(400,300));
+            setSize(new Dimension(300,180));
+            setResizable(false);
             setLocationRelativeTo(null);
-            pack();
+            //pack();
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             setVisible(true);
         }catch (MySqlException e){
