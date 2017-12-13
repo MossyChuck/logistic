@@ -23,6 +23,7 @@ public class Order {
         this.destinationPlace = destinationPlace;
         this.items = new ArrayList<>();
     }
+
     public void addItem(Item item){
         this.items.add(item);
     }

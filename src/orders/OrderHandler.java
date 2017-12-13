@@ -10,39 +10,30 @@ import place.Stock;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class OrderHandler {
     private static ArrayList<Order> orders;
     private static ArrayList<Vehicle> vehicles;
     private static String message ;
+    private static ArrayList<Order> handledOrders;
+
     public static void handle(){
-        loadData();
-        message = "";
-        ArrayList<Order> handledOrders = new ArrayList<>();
+        init();
         for(Order order: orders){
             ArrayList<Road> roads = loadRoads(order.getStock());
-            double volume = 0;
-            double weight = 0;
+            double volume = 0, weight = 0;
             for(Item item: order.getItems()){
                 volume += item.getVolume();
                 weight += item.getWeight();
-
             }
-            Vehicle currentVehicle;
-            for(Vehicle v: vehicles){
-                if(v.getMaxWeight()>= weight && v.getVolume() >= volume){
-                    currentVehicle = v;
-                    double time = getLength(roads,order.getDestinationPlace()) / v.getMaxSpeed();
-                    vehicles.remove(v);
-                    message += "Order #1 handled by " + v.getModel() + ", it takes " + String.format("%.2f",time) + " hours.\n";
-                    handledOrders.add(order);
-                    break;
-                }
-            }
-
+            handleOrder(order,roads,weight,volume);
+            setEndOfMessage();
         }
+
+    }
+
+    private static void setEndOfMessage(){
         orders.removeAll(handledOrders);
         if(orders.size() == 0){
             message += "No unhandled orders.";
@@ -57,19 +48,47 @@ public class OrderHandler {
             return;
         }
         message += "Delete handled orders?";
+        if(isDeletingOrders()){
+            deleteOrders();
+        }
+    }
+    private static void init(){
+        loadData();
+        message = "";
+        handledOrders = new ArrayList<>();
+    }
+    private static boolean isDeletingOrders(){
         int isDeletingOrders = JOptionPane.showConfirmDialog(null, message);
         if(isDeletingOrders == JOptionPane.YES_OPTION){
-            try{
-                for(Order order: handledOrders) {
-                    Database.deleteOrder(order);
-                }
-                Main.getGui().buildOrderTable();
-            }catch (MySqlException e){
-                JOptionPane.showMessageDialog(null,e.getMessage());
+            return true;
+        }
+        return false;
+    }
+    private static void deleteOrders(){
+        try{
+            for(Order order: handledOrders) {
+                Database.deleteOrder(order);
+            }
+            Main.getGui().buildOrderTable();
+        }catch (MySqlException e){
+            JOptionPane.showMessageDialog(null,e.getMessage());
+        }
+    }
+    private static void handleOrder(Order order, ArrayList<Road> roads, double weight, double volume){
+        for(Vehicle v: vehicles){
+            if(v.getMaxWeight()>= weight && v.getVolume() >= volume){
+                double time = getLength(roads,order.getDestinationPlace()) / v.getMaxSpeed();
+                message += getHandledOrderMessage(v,time);
+                vehicles.remove(v);
+                handledOrders.add(order);
+                break;
             }
         }
     }
+    private static String getHandledOrderMessage(Vehicle v, double time){
+        return  "Order #1 handled by " + v.getModel() + ", it takes " + String.format("%.2f",time) + " hours.\n";
 
+    }
     private static int getLength(ArrayList<Road> roads, DestinationPlace destinationPlace){
         int length = 1;
         for(Road road: roads){

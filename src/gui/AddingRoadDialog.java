@@ -62,13 +62,13 @@ public class AddingRoadDialog extends JDialog {
             setSize(new Dimension(300,180));
             setResizable(false);
             setLocationRelativeTo(null);
-            //pack();
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             setVisible(true);
         }catch (MySqlException e){
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
     }
+
     private void okButtonAction(){
         int length;
         try{

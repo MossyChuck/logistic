@@ -59,7 +59,6 @@ public class AddingOrderDialog extends JDialog {
             pane.add(nameTextField);
             stockLabel = addLabel("From");
             Stock[] stocks = Database.getStocks();
-            //addComboBox(stockComboBox, stocks);
             stockComboBox = new JComboBox<>(stocks);
             stockComboBox.setMaximumSize(new Dimension(400, 30));
             stockComboBox.setSelectedItem(null);
@@ -67,10 +66,7 @@ public class AddingOrderDialog extends JDialog {
             pane.add(stockComboBox);
             dpcbPane = new JPanel();
             dpcbPane.setLayout(new BoxLayout(dpcbPane,BoxLayout.Y_AXIS));
-            //dpcbPane.setSize(new Dimension(500, 30));
-//            dpcbPane.add(destinationPlaceComboBox);
             pane.add(dpcbPane);
-            //pane.add(destinationPlaceComboBox);
             addedItemsCountLabel = addLabel("Items added: " + items.size());
             JPanel p2 = new JPanel();
             addItemButton = new JButton("Add item");
@@ -89,8 +85,7 @@ public class AddingOrderDialog extends JDialog {
             pane.add(p);
 
             setSize(new Dimension(300,210));
-            //setResizable(false);
-            //pack();
+            setResizable(false);
             setLocationRelativeTo(null);
 
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -99,6 +94,7 @@ public class AddingOrderDialog extends JDialog {
             JOptionPane.showMessageDialog(null,e.getMessage());
         }
     }
+
     private void okButtonAction(){
         String name = nameTextField.getText();
         Stock stock = (Stock) stockComboBox.getSelectedItem();

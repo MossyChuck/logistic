@@ -20,26 +20,14 @@ import java.util.ArrayList;
 
 public class Database {
 
-    // JDBC URL, username and password of MySQL server
     private static final String url = "jdbc:mysql://localhost:3306/logistic";
     private static final String user = "root";
     private static final String password = "12345";
     private static final String errorMessage = "Database error";
 
-    // JDBC variables for opening and managing connection
     private static Connection con;
     private static Statement stmt;
     private static ResultSet rs;
-
-    public static ResultSet getRs() {
-        return rs;
-    }
-    public static Connection getCon() {
-        return con;
-    }
-    public static Statement getStmt() {
-        return stmt;
-    }
 
     public static void init(){
         try{
@@ -57,6 +45,7 @@ public class Database {
             System.out.println("closing connection error");
         }
     }
+
     public static void insertPlace(Place place) throws MySqlException{
         AddingPlaceDialog.Type type;
         if(place instanceof Stock){
@@ -194,7 +183,6 @@ public class Database {
         }
         return roads.toArray(new Road[roads.size()]);
     }
-
     public static Vehicle[] getVehicles() throws MySqlException{
         String query = "select * from vehicles;";
         ArrayList<Vehicle> vehicles = new ArrayList<>();
@@ -221,7 +209,6 @@ public class Database {
         }
         return vehicles.toArray(new Vehicle[vehicles.size()]);
     }
-
     public static void deleteVehicle(Vehicle vehicle) throws MySqlException{
         String query = "delete from vehicles where model='"+vehicle.getModel()+"' and maxSpeed = "+vehicle.getMaxSpeed()+" and volume = "+vehicle.getVolume()+" and maxWeight="+vehicle.getMaxWeight()+";";
         try{
@@ -232,8 +219,15 @@ public class Database {
         }
     }
     public static void deleteOrder(Order order) throws MySqlException{
-        String query = "delete from orders where customer='"+order.getCustomer()+"' and stock='"+order.getStock().getName()+"' and destinationPlace='"+order.getDestinationPlace().getName()+"';";
+        String query = "select * from orders where customer='"+order.getCustomer()+"' and stock='"+order.getStock().getName()+"' and destinationPlace='"+order.getDestinationPlace().getName()+"';";
         try{
+            rs = stmt.executeQuery(query);
+            while (rs.next()){
+                int id = rs.getInt("id");
+                deleteItemsByOrderId(id);
+
+            }
+            query = "delete from orders where customer='"+order.getCustomer()+"' and stock='"+order.getStock().getName()+"' and destinationPlace='"+order.getDestinationPlace().getName()+"';";
             stmt.executeUpdate(query);
         }catch (SQLException exception){
             throw  new MySqlException(errorMessage);
@@ -247,7 +241,6 @@ public class Database {
             throw new MySqlException(errorMessage);
         }
     }
-
     public static void insertItem(Item item,int orderId) throws MySqlException{
         String query = "insert into items (name,volume,weight,orderId) values('"+item.getName()+"',"+item.getVolume()+","+item.getWeight()+","+orderId+");";
         try{
@@ -263,7 +256,6 @@ public class Database {
             }
         }
     }
-
     public static void insertOrder(Order order) throws MySqlException{
         String query = "insert into orders (customer,stock,destinationPlace) values('"+order.getCustomer()+"','"+order.getStock().getName()+"','"+order.getDestinationPlace().getName()+"');";
         try {
@@ -289,7 +281,6 @@ public class Database {
         }
 
     }
-
     public static Order[] getOrders() throws MySqlException{
         ArrayList<Order> orders = new ArrayList<>();
         String query = "select * from orders";
@@ -343,5 +334,13 @@ public class Database {
 
         return items.toArray(new Item[items.size()]);
     }
-
+    public static void deleteItemsByOrderId(int orderId) throws MySqlException{
+        String query = "delete from items where orderId="+orderId+";";
+        try {
+            Statement statement = con.createStatement();
+            statement.executeUpdate(query);
+        }catch (SQLException e){
+            throw new MySqlException(errorMessage);
+        }
+    }
 }

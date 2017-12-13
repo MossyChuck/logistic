@@ -5,11 +5,6 @@ public class Item {
     private double weight;
     private String name;
 
-    public Item(){
-        name = "item";
-        weight = 1;
-        volume = 1;
-    }
     public Item(String name,double volume, double weight){
         this.name = name;
         this.volume = volume;

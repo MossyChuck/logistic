@@ -76,6 +76,7 @@ public class AddingPlaceDialog extends JDialog {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
+
     private void okButtonAction(){
         Place place;
         if(typeComboBox.getSelectedItem() == Type.STOCK){

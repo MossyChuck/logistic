@@ -205,6 +205,7 @@ public class Gui extends JFrame{
         getContentPane().repaint();
         pack();
     }
+
     private void newOrderAction(){
         if(addingOrderDialog == null){
             addingOrderDialog = new AddingOrderDialog(this);
